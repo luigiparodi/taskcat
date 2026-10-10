@@ -11,7 +11,7 @@ services:
         value: production
       - key: PORT
         value: "3000"
-      - key: MONGODB_URI
+      - key: DATABASE_URL
         sync: false
       - key: DATABASE_NAME
         value: taskcat
