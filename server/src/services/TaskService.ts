@@ -968,7 +968,7 @@ export async function getUserTaskHistory(
 ) {
   // Enforce self-or-admin (reuse the existing authorization logic by checking the target)
   // We don't need the full user object back, just to ensure access is allowed.
-  const { getUserProfile } = await import('./UserService');
+  const { getUserProfile } = await import('./UserService.js');
   await getUserProfile(userId, requester);
 
   if (filters.page !== undefined && (!Number.isInteger(filters.page) || filters.page < 1)) {
