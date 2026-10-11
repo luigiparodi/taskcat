@@ -34,7 +34,7 @@ taskcat-app/
   - Set `VITE_API_BASE` in Vercel to Render API URL
   - Update `CORS_ORIGINS` in Render after Vercel URL is known
 
-- [ ] **GitHub OAuth Connection**
+- [x] **GitHub OAuth Connection**
   - Create GitHub OAuth app → add callback URL to Render env
   - Verify login flow works end-to-end
 
