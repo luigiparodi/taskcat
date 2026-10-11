@@ -1,14 +1,14 @@
 export function Footer() {
   return (
-    <footer className="relative border-t border-border/50 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
+    <footer className="fixed bottom-0 left-0 right-0 z-40 border-t border-border/50 bg-background/80 backdrop-blur-xl backdrop-saturate-150 overflow-hidden">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-transparent" />
         <div className="apple-drift absolute left-1/2 bottom-[10%] h-[40vh] w-[60vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(82_118_196/0.15),transparent_72%)] blur-[60px]" />
         <div className="apple-drift-b absolute bottom-[-20%] right-[-15%] h-[50vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgb(134_118_214/0.1),transparent_72%)] blur-[80px]" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-6">
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+      <div className="relative mx-auto max-w-6xl px-6 py-4">
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
           <p className="text-caption text-muted-foreground text-center sm:text-left">
             Created by Luigi Parodi. Software & AI Engineer. 2026.
           </p>

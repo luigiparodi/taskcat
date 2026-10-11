@@ -81,8 +81,9 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Suspense fallback={<FullPageMessage title="Loading" />}>
-      <div className="flex min-h-screen flex-col bg-background">
-        <Routes>
+      <div className="min-h-screen bg-background">
+        <main className="pb-20">
+          <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
@@ -115,7 +116,8 @@ export default function App() {
             <Route path="analytics" element={<AdminAnalyticsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/projects" replace />} />
-        </Routes>
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Suspense>
