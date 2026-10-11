@@ -7,9 +7,9 @@ export interface AuthContextValue {
   user: PublicUser | null;
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
+  loginWithTokens: (token: string, refreshToken: string, user: PublicUser) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  authenticateWithTokens: (token: string, refreshToken: string, user: PublicUser) => Promise<void>;
 }
 
 export const AuthContext = React.createContext<AuthContextValue | null>(null);

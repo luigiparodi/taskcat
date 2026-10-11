@@ -137,7 +137,7 @@ export function useAuthProvider(): AuthContextValue {
     navigate("/login", { replace: true });
   }, [clearSession, navigate]);
 
-  const loginWithTokens = React.useCallback(
+const loginWithTokens = React.useCallback(
     async (token: string, refreshToken: string, user: AuthContextValue["user"]) => {
       writeStoredTokens({ token, refreshToken });
       queryClient.clear();
@@ -148,7 +148,7 @@ export function useAuthProvider(): AuthContextValue {
   );
 
   return React.useMemo<AuthContextValue>(
-    () => ({ user, status, login, register, logout, authenticateWithTokens: loginWithTokens }),
+    () => ({ user, status, login, register, logout, loginWithTokens }),
     [user, status, login, register, logout, loginWithTokens],
   );
 }
