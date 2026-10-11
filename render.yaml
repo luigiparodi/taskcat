@@ -4,7 +4,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd server && npm run build
+    buildCommand: cd server && npm ci --include=dev && npm run build
     startCommand: cd server && npm start
     envVars:
       - key: NODE_ENV
@@ -20,9 +20,9 @@ services:
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        value: https://lptaskcat.vercel.app
+        value: https://lp-taskcat.vercel.app
       - key: FRONTEND_URL
-        value: https://lptaskcat.vercel.app
+        value: https://lp-taskcat.vercel.app
       - key: GITHUB_CLIENT_ID
         sync: false
       - key: GITHUB_CLIENT_SECRET
