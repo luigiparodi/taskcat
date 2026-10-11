@@ -56,7 +56,7 @@ export function ProjectsView({
   handleRefresh,
 }: ProjectsViewProps) {
   return (
-    <div className="relative min-h-dvh bg-background">
+    <>
       <AppHeader
         title="Projects"
         actions={
@@ -198,6 +198,6 @@ export function ProjectsView({
           </nav>
         ) : null}
       </main>
-    </div>
+    </>
   );
 }

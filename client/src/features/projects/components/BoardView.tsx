@@ -143,7 +143,7 @@ export function BoardView({
   }
 
   return (
-    <div className="relative min-h-dvh bg-background">
+    <>
       <AppHeader
         title={project.data?.title ?? "Board"}
         subtitle={`${totalTasks} ${totalTasks === 1 ? "task" : "tasks"}`}
@@ -236,6 +236,6 @@ export function BoardView({
           }}
         />
       ) : null}
-    </div>
+      </>
   );
 }

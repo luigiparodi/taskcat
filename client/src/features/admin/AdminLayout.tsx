@@ -10,7 +10,7 @@ const SECTIONS = [
 
 export function AdminLayout() {
   return (
-    <div className="relative min-h-dvh bg-background">
+    <>
       <AppHeader
         title="Admin"
         subtitle="Global administration"
@@ -39,6 +39,6 @@ export function AdminLayout() {
 
         <Outlet />
       </div>
-    </div>
+    </>
   );
 }
