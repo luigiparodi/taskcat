@@ -20,6 +20,9 @@ export function LoginPage() {
   const from =
     (location.state as { from?: string } | null)?.from ?? "/projects";
 
+  const TEST_ADMIN_EMAIL = "admin@taskcat.com";
+  const TEST_ADMIN_PASSWORD = "qwerty123";
+
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState<Errors>({});
@@ -27,6 +30,13 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
+
+  function fillTestAdmin() {
+    setEmail(TEST_ADMIN_EMAIL);
+    setPassword(TEST_ADMIN_PASSWORD);
+    setErrors({});
+    setFormError(null);
+  }
 
   if (status === "authenticated") {
     return <Navigate to={from} replace />;
@@ -140,6 +150,16 @@ export function LoginPage() {
             />
             <FieldError>{errors.password}</FieldError>
           </Field>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="w-full text-caption text-muted-foreground hover:text-foreground"
+            onClick={fillTestAdmin}
+          >
+            Fill test admin (admin@taskcat.com / qwerty123)
+          </Button>
 
           <Button type="submit" size="lg" loading={submitting} className="w-full">
             Sign in
