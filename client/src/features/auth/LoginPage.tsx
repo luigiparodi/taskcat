@@ -7,6 +7,7 @@ import { AuthShell, FormError } from "@/features/auth/AuthShell";
 import { useAuth } from "@/features/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
+import { GitHubLoginButton } from "@/features/auth/GitHubLoginButton";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -83,6 +84,17 @@ export function LoginPage() {
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <FormError message={formError} />
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
+
+        <GitHubLoginButton className="w-full" />
 
         <Field invalid={Boolean(errors.email)}>
           <FieldLabel>Email</FieldLabel>

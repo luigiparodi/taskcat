@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   changePasswordHandler,
   githubCallbackHandler,
+  githubLoginHandler,
   loginHandler,
   logoutHandler,
   meHandler,
@@ -43,6 +44,21 @@ const router = Router();
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.post('/register', registerHandler);
+
+/**
+ * @openapi
+ * /auth/github:
+ *   get:
+ *     summary: Initiate GitHub OAuth flow
+ *     description: Redirects the user to GitHub to authorize the application.
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirect to GitHub authorization page
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+router.get('/github', githubLoginHandler);
 
 /**
  * @openapi

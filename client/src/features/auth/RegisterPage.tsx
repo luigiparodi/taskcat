@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AtSign, Eye, EyeOff, KeyRound, User } from "lucide-react";
+import { GitHubLoginButton } from "@/features/auth/GitHubLoginButton";
 import {
   Field,
   FieldError,
@@ -98,6 +99,17 @@ export function RegisterPage() {
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <FormError message={formError} />
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
+
+        <GitHubLoginButton className="w-full" />
 
         <Field invalid={Boolean(errors.name)}>
           <FieldLabel>Name</FieldLabel>

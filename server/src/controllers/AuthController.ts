@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { AuthError, changePassword, getMe, githubAuth, login, logout, refresh, register } from '../services/AuthService';
 import { logger } from '../config/logger';
+import crypto from 'crypto';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -32,6 +33,37 @@ export async function registerHandler(req: Request, res: Response) {
     logger.error('register error', err);
     res.status(500).json({ error: 'Internal server error' });
   }
+}
+
+export async function githubLoginHandler(req: Request, res: Response) {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const frontendUrl = process.env.FRONTEND_URL;
+
+  if (!clientId || !frontendUrl) {
+    logger.error('GitHub OAuth not configured');
+    res.status(500).json({ error: 'GitHub OAuth is not configured' });
+    return;
+  }
+
+  const state = crypto.randomUUID();
+  const redirectUri = `${frontendUrl}/auth/github/callback`;
+
+  res.cookie('github_oauth_state', state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 10 * 60 * 1000,
+  });
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    scope: 'read:user user:email',
+    state,
+    allow_signup: 'true',
+  });
+
+  res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
 }
 
 export async function loginHandler(req: Request, res: Response) {

@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/auth-context";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
+import { GithubCallbackPage } from "@/features/auth/GithubCallbackPage";
 import { ProjectsPage } from "@/features/projects/ProjectsPage";
 import { AdminLayout } from "@/features/admin/AdminLayout";
 import { Footer } from "@/components/Footer";
@@ -86,6 +87,7 @@ export default function App() {
           <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth/github/callback" element={<GithubCallbackPage />} />
           <Route
             path="/projects"
             element={

@@ -15,7 +15,7 @@ export function Footer() {
 
           <div className="flex items-center gap-4 text-footnote text-muted-foreground/70">
             <a
-              href="https://github.com/luigip"
+              href="https://github.com/luigiparodi"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors duration-150 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 rounded-sm"
@@ -26,7 +26,7 @@ export function Footer() {
               </svg>
             </a>
             <a
-              href="https://linkedin.com/in/luigip"
+              href="https://www.linkedin.com/in/lparodir/"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors duration-150 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 rounded-sm"
@@ -37,7 +37,7 @@ export function Footer() {
               </svg>
             </a>
             <a
-              href="mailto:luigi@example.com"
+              href="mailto:luigiparodi.dev@gmail.com"
               className="transition-colors duration-150 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 rounded-sm"
               aria-label="Email"
             >
