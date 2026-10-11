@@ -170,8 +170,8 @@ function AlertDialogAction({
       data-slot="alert-dialog-action"
       className={cn(
         variant === "destructive"
-          ? "px-2 rounded-4xl bg-danger text-destructive-foreground hover:bg-danger-hover active:bg-danger-active"
-          : "px-2 rounded-4xl bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-active",
+          ? "px-4 py-2 rounded-box bg-danger text-destructive-foreground hover:bg-danger-hover active:bg-danger-active"
+          : "px-4 py-2 rounded-box bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-active",
         className,
       )}
       {...props}
@@ -187,7 +187,7 @@ function AlertDialogCancel({
     <AlertDialogPrimitive.Cancel
       data-slot="alert-dialog-cancel"
       className={cn(
-        "py-2 px-1 rounded-2xl bg-background text-foreground hover:bg-muted active:bg-secondary-hover",
+        "px-4 py-2 rounded-box bg-background text-foreground hover:bg-muted active:bg-secondary-hover",
         className,
       )}
       {...props}
