@@ -28,7 +28,7 @@ services:
       - key: GITHUB_CLIENT_SECRET
         sync: false
       - key: GITHUB_CALLBACK_URL
-        value: https://taskcat-api.onrender.com/auth/github/callback
+        value: https://lp-taskcat.vercel.app/auth/github/callback
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
