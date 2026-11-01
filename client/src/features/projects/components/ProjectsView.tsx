@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ProjectStatus } from "@/lib/api/types";
 import type { useProjects } from "@/features/projects/hooks/useProjects";
 
@@ -99,9 +100,17 @@ export function ProjectsView({
         </div>
 
         {isPending ? (
-          <p role="status" className="text-body text-muted-foreground">
-            Loading projects...
-          </p>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <li key={i}>
+                <div className="rounded-card border border-border p-4 space-y-3">
+                  <Skeleton className="h-5 w-2/3" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : isError ? (
           <div className="flex flex-col items-start gap-3 rounded-card border border-danger-border bg-danger-subtle p-4">
             <p role="alert" className="text-body font-medium text-danger">

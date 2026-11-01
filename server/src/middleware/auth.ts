@@ -3,7 +3,11 @@ import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { getUserCollection } from '../models/User';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const JWT_SECRET_RAW = process.env.JWT_SECRET;
+if (!JWT_SECRET_RAW && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET must be set in production');
+}
+const JWT_SECRET = JWT_SECRET_RAW || 'dev-secret';
 
 export interface AuthUser {
   userId: string;

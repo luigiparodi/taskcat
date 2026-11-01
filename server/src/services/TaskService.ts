@@ -13,7 +13,8 @@ import {
 import { getProjectCollection } from '../models/Project';
 import { AuthError } from './AuthService';
 import { logAudit } from './AuditService';
-import { getMembership } from './ProjectService';
+import { getMembership, type ProjectAccess } from './ProjectService';
+import { parseObjectId } from '../utils/objectId';
 
 const TITLE_MIN = 3;
 const TITLE_MAX = 150;
@@ -57,21 +58,16 @@ export function isValidStatus(value: string): value is TaskStatus {
   return VALID_STATUSES.includes(value as TaskStatus);
 }
 
-export interface ProjectAccess {
-  project: { _id?: ObjectId; status?: string; endDate?: Date };
-  membership: { role: string } | null;
-}
 
 export async function getProjectAccess(
   projectId: string,
   requester: { userId: string; role: string }
 ): Promise<ProjectAccess> {
-  let project;
-  try {
-    project = await getProjectCollection().findOne({ _id: new ObjectId(projectId) });
-  } catch {
+  const objectId = parseObjectId(projectId);
+  if (!objectId) {
     throw new AuthError('Project not found', 404);
   }
+  const project = await getProjectCollection().findOne({ _id: objectId });
 
   if (!project) {
     throw new AuthError('Project not found', 404);

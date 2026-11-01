@@ -11,6 +11,7 @@ export function GithubCallbackPage() {
   useEffect(() => {
     async function handleCallback() {
       const code = searchParams.get('code');
+      const state = searchParams.get('state');
       const error = searchParams.get('error');
       const errorDescription = searchParams.get('error_description');
 
@@ -26,7 +27,7 @@ export function GithubCallbackPage() {
       }
 
       try {
-        const result = await authApi.githubCallback(code);
+        const result = await authApi.githubCallback(code, state ?? undefined);
         await loginWithTokens(result.token, result.refreshToken ?? "", result.user);
         navigate('/projects', { replace: true });
       } catch (err) {

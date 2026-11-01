@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-11-01
+
+### Added
+- Readiness probe at `GET /ready`, including a MongoDB ping
+- Graceful shutdown on `SIGTERM`/`SIGINT` (closes the HTTP server and MongoDB client)
+- Request logging middleware with method, path, status and duration
+- React `ErrorBoundary` around the app shell with a reload action
+- Skeleton loading state for the projects list
+
+### Changed
+- Import preview sessions are now stored in MongoDB (`import_sessions`) instead of in-process memory, so they survive restarts and work across instances
+- Added MongoDB indexes for project status, project membership lookups, task assignees, task comments/links/history and audit logs
+- `POST /auth/github/callback` now requires the `state` value issued by `GET /auth/github`
+- Uploads are restricted to one PDF/DOCX file (max 10 MB)
+- JSON request bodies are limited to 1 MB
+- CORS runs before the rate limiter, and `/ready` is available for platform health checks
+- AI document extraction prompt treats document text as untrusted data
+- TanStack Query keeps inactive cache entries for 5 minutes
+- Runtime dependencies no longer include Jest, Supertest or `@types/*` packages; they live in `devDependencies`
+- `@types/node` aligned with the Node.js 20 CI runtime
+- README structure, deployment variables and CI description updated to match the repo
+
+### Fixed
+- Invalid project IDs now return `404` instead of throwing a MongoDB `ObjectId` error
+- `JWT_SECRET` is validated in production instead of silently falling back to `dev-secret`
+- GitHub OAuth `state` cookie is cleared after use and validated against the callback payload
+- Removed committed TypeScript build artifacts and added a `.gitignore` for build output, env files and dependencies
+
+### CI
+- Server job runs the Jest suite (`--passWithNoTests` until tests are added)
+
 ## [1.1.0] - 2026-10-10
 
 ### Added
@@ -60,5 +91,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[1.2.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.2.0
 [1.1.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.1.0
 [1.0.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.0.0

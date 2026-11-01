@@ -20,10 +20,18 @@ export async function connectDatabase() {
   await db.collection('users').createIndex({ email: 1 }, { unique: true });
   await db.collection('users').createIndex({ status: 1 });
   await db.collection('projects').createIndex({ createdBy: 1 });
+  await db.collection('projects').createIndex({ status: 1 });
   await db.collection('project_members').createIndex({ projectId: 1, userId: 1 }, { unique: true });
+  await db.collection('project_members').createIndex({ userId: 1 });
   await db.collection('tasks').createIndex({ projectId: 1, status: 1 });
+  await db.collection('tasks').createIndex({ assignedTo: 1 });
+  await db.collection('task_comments').createIndex({ taskId: 1, createdAt: 1 });
+  await db.collection('task_links').createIndex({ taskId: 1, createdAt: -1 });
+  await db.collection('task_history').createIndex({ taskId: 1, createdAt: -1 });
+  await db.collection('audit_logs').createIndex({ entityType: 1, createdAt: -1 });
   await db.collection('refresh_tokens').createIndex({ userId: 1 });
   await db.collection('refresh_tokens').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db.collection('import_sessions').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
   logger.info('MongoDB connected & indexes ensured');
   return db;

@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { getDb } from '../config/database';
 
 export interface ImportPreviewTask {
   title: string;
@@ -19,33 +20,36 @@ export interface ImportSession {
 
 export const IMPORT_SESSION_TTL_MS = 30 * 60 * 1000;
 
-const sessions = new Map<string, ImportSession>();
+const COLLECTION = 'import_sessions';
 
-export function createImportSession(
+function collection() {
+  return getDb().collection<ImportSession & { _id: string }>(COLLECTION);
+}
+
+export async function createImportSession(
   data: Omit<ImportSession, 'expiresAt'>
-): { sessionId: string; session: ImportSession } {
+): Promise<{ sessionId: string; session: ImportSession }> {
   const sessionId = randomUUID();
   const session: ImportSession = { ...data, expiresAt: Date.now() + IMPORT_SESSION_TTL_MS };
-  sessions.set(sessionId, session);
+  await collection().insertOne({ _id: sessionId, ...session });
   return { sessionId, session };
 }
 
-export function getImportSession(sessionId: string): ImportSession | null {
-  const session = sessions.get(sessionId);
-  if (!session) {
+export async function getImportSession(sessionId: string): Promise<ImportSession | null> {
+  const doc = await collection().findOne({ _id: sessionId });
+  if (!doc) return null;
+  if (doc.expiresAt <= Date.now()) {
+    await collection().deleteOne({ _id: sessionId });
     return null;
   }
-  if (session.expiresAt <= Date.now()) {
-    sessions.delete(sessionId);
-    return null;
-  }
+  const { _id, ...session } = doc;
   return session;
 }
 
-export function deleteImportSession(sessionId: string): void {
-  sessions.delete(sessionId);
+export async function deleteImportSession(sessionId: string): Promise<void> {
+  await collection().deleteOne({ _id: sessionId });
 }
 
-export function clearImportSessions(): void {
-  sessions.clear();
+export async function clearImportSessions(): Promise<void> {
+  await collection().deleteMany({});
 }

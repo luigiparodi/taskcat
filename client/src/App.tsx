@@ -6,6 +6,7 @@ import { RegisterPage } from "@/features/auth/RegisterPage";
 import { GithubCallbackPage } from "@/features/auth/GithubCallbackPage";
 import { ProjectsPage } from "@/features/projects/ProjectsPage";
 import { AdminLayout } from "@/features/admin/AdminLayout";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Footer } from "@/components/Footer";
 
 const BoardPage = lazy(() =>
@@ -81,7 +82,8 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Suspense fallback={<FullPageMessage title="Loading" />}>
+    <ErrorBoundary>
+      <Suspense fallback={<FullPageMessage title="Loading" />}>
       <div className="min-h-screen bg-background">
         <main className="pb-20">
           <Routes>
@@ -123,5 +125,6 @@ export default function App() {
         <Footer />
       </div>
     </Suspense>
+    </ErrorBoundary>
   );
 }

@@ -4,6 +4,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
+      gcTime: 5 * 60_000,
       retry: (failureCount, error) => {
         if (error instanceof Error && 'isUnauthorized' in error) {
           const apiError = error as Error & Record<string, unknown>;

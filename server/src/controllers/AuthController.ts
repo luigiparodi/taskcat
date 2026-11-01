@@ -102,13 +102,49 @@ export async function logoutHandler(req: Request, res: Response) {
   }
 }
 
+function readCookie(req: Request, name: string): string | undefined {
+  const header = req.headers.cookie;
+  if (!header) return undefined;
+  for (const part of header.split(';')) {
+    const [rawKey, ...rest] = part.trim().split('=');
+    if (rawKey === name) {
+      try {
+        return decodeURIComponent(rest.join('='));
+      } catch {
+        return rest.join('=');
+      }
+    }
+  }
+  return undefined;
+}
+
 export async function githubCallbackHandler(req: Request, res: Response) {
-  const { code } = req.body ?? {};
+  const { code, state } = req.body ?? {};
 
   if (typeof code !== 'string' || code.length === 0) {
     res.status(400).json({ error: 'GitHub code is required' });
     return;
   }
+
+  // Verify the OAuth state to prevent CSRF. The state was issued by githubLoginHandler
+  // and stored in an httpOnly cookie on this domain.
+  const expectedState = readCookie(req, 'github_oauth_state');
+  if (
+    typeof state !== 'string' ||
+    state.length === 0 ||
+    !expectedState ||
+    expectedState !== state
+  ) {
+    res.status(400).json({ error: 'Invalid or missing OAuth state' });
+    return;
+  }
+
+  // Consume the state so it cannot be replayed.
+  res.clearCookie('github_oauth_state', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
 
   try {
     const result = await githubAuth(code);

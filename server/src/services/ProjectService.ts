@@ -8,6 +8,7 @@ import {
   getTaskLinkCollection,
 } from '../models/Task';
 import { AuthError } from './AuthService';
+import { parseObjectId } from '../utils/objectId';
 import { logAudit } from './AuditService';
 
 const PAGE_SIZE_DEFAULT = 20;
@@ -34,12 +35,11 @@ export async function getProjectAccess(
   projectId: string,
   requester: { userId: string; role: string }
 ): Promise<ProjectAccess> {
-  let project;
-  try {
-    project = await getProjectCollection().findOne({ _id: new ObjectId(projectId) });
-  } catch {
+  const objectId = parseObjectId(projectId);
+  if (!objectId) {
     throw new AuthError('Project not found', 404);
   }
+  const project = await getProjectCollection().findOne({ _id: objectId });
 
   if (!project) {
     throw new AuthError('Project not found', 404);

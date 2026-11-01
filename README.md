@@ -1,4 +1,4 @@
-# Cat Task
+# TaskCat
 
 A full-stack project and task management app. Teams are organised into **projects**; each project holds a kanban board of **tasks** with priorities, assignees, comments, links and history. Admins manage users and projects, get an analytics dashboard, and requirements documents can be converted into draft tasks with AI.
 
@@ -6,23 +6,23 @@ A full-stack project and task management app. Teams are organised into **project
 
 ```
 taskcat-app/
-├── server/     Express + TypeScript + MongoDB API
-├── client/     Vite + React + TypeScript SPA (Tailwind v4 + shadcn/ui)
-├── docs/       Product and design documents
-├── scripts/    Repo utilities
-├── .github/    CI/CD workflows
-└── render.yaml Render Blueprint for backend deploy
+├── server/       Express + TypeScript + MongoDB API
+├── client/       Vite + React + TypeScript SPA (Tailwind v4 + shadcn/ui)
+├── .github/      CI workflow
+├── render.yaml   Render Blueprint for backend deploy
+├── CHANGELOG.md  Release history
+└── README.md
 ```
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Backend | Node.js, Express 5, TypeScript, native MongoDB driver |
-| Auth | JWT (15m/7d), GitHub OAuth, bcryptjs |
-| AI Import | Google Gemini (`@google/genai`) |
-| Frontend | Vite, React, TypeScript, React Router, TanStack Query |
-| Styling | Tailwind CSS v4, shadcn/ui, Apple-esque design tokens |
+| Layer     | Technology                                            |
+| --------- | ----------------------------------------------------- |
+| Backend   | Node.js, Express 5, TypeScript, native MongoDB driver |
+| Auth      | JWT (15m/7d), GitHub OAuth, bcryptjs                  |
+| AI Import | Google Gemini (`@google/genai`)                       |
+| Frontend  | Vite, React, TypeScript, React Router, TanStack Query |
+| Styling   | Tailwind CSS v4, shadcn/ui, Apple-esque design tokens |
 
 ---
 
@@ -30,7 +30,7 @@ taskcat-app/
 
 - [x] **Deploy to Render (API) + Vercel (Frontend)**
   - Push to GitHub → connect Render Blueprint (`render.yaml`) + Vercel (`client/vercel.json`)
-  - Set env vars in Render: `MONGODB_URI`, `GITHUB_CLIENT_ID/SECRET`, `GEMINI_API_KEY`
+  - Set env vars in Render: `DATABASE_URL`, `DATABASE_NAME`, `JWT_SECRET`, `GITHUB_CLIENT_ID/SECRET`, `GEMINI_API_KEY`
   - Set `VITE_API_BASE` in Vercel to Render API URL
   - Update `CORS_ORIGINS` in Render after Vercel URL is known
 
@@ -64,20 +64,24 @@ npm run dev            # http://localhost:5173 (proxies /api to server)
 ## Testing
 
 ```bash
-# Backend
+# Backend (Jest)
 cd server && npm test
 
-# Frontend
+# Frontend (Vitest)
 cd client && npm test
 ```
+
+> Test suites are not included in this repository yet. CI runs the backend build and the frontend lint/build.
 
 ## Documentation
 
 - `server/README.md` — architecture, env vars, API endpoints
 - `client/README.md` — frontend architecture, design system, API layer
-- `ENDPOINTS.md` — generated API reference
 - Live API docs at `/api-docs` (dev only)
 
 ## CI/CD
 
-GitHub Actions runs on every push: tests → lint → build for both server and client.
+GitHub Actions runs on every push to `main` and pull request:
+
+- **Server:** install → test → build
+- **Client:** install → lint → build

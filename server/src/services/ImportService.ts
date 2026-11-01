@@ -184,7 +184,7 @@ export async function importTasksFromDocument(
     throw new AuthError('No tasks could be extracted from the document', 422);
   }
 
-  const { sessionId } = createImportSession({
+  const { sessionId } = await createImportSession({
     projectId,
     requesterId: requester.userId,
     tasks: preview,
@@ -216,7 +216,7 @@ export async function createTasksFromImport(
 ) {
   await assertCanImport(projectId, requester);
 
-  const session = getImportSession(input.sessionId);
+  const session = await getImportSession(input.sessionId);
   if (!session) {
     throw new AuthError('Import session not found or expired', 404);
   }
@@ -234,7 +234,7 @@ export async function createTasksFromImport(
     tasks: source.map(toTaskCreateInput),
   });
 
-  deleteImportSession(input.sessionId);
+  await deleteImportSession(input.sessionId);
 
   return { created: created.length, tasks: created };
 }

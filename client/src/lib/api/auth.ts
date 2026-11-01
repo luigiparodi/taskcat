@@ -30,8 +30,8 @@ export const authApi = {
   logout(refreshToken?: string) {
     return api.post<LogoutResult>("/auth/logout", refreshToken ? { refreshToken } : undefined);
   },
-  githubCallback(code: string) {
-    return api.post<SessionResult>("/auth/github/callback", { code }, { auth: false });
+  githubCallback(code: string, state?: string) {
+    return api.post<SessionResult>("/auth/github/callback", { code, state }, { auth: false });
   },
   refresh(refreshToken: string) {
     return api.post<RefreshResult>("/auth/refresh", { refreshToken }, { auth: false });
