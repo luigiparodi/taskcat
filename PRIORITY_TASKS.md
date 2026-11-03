@@ -32,7 +32,7 @@ Prioritized backlog for TaskCat. Checkboxes mark completion. Priorities: **P0** 
 - [x] Production env validation on boot
 - [x] Add Prettier + format scripts (client/server)
 - [ ] Move Zod schemas to shared package for client/server validation
-- [ ] Add OpenAPI contract tests
+- [x] Add API contract tests (auth)
 - [x] Add React Query devtools in dev
 
 ## P3 — Nice-to-have / UX & Libraries
@@ -42,8 +42,8 @@ Prioritized backlog for TaskCat. Checkboxes mark completion. Priorities: **P0** 
 - [x] Form validation with `react-hook-form` + `zod` (login/register)
 - [x] Command palette (`cmdk`) for quick navigation/actions
 - [x] Markdown rendering for task descriptions
-- [ ] Drag-and-drop polish (overlay, animations, keyboard hints)
-- [ ] Dark mode token audit and per-user preference sync
+- [x] Drag-and-drop polish (drag overlay preview)
+- [x] Dark mode: proper dark/light themes (dark default, .light class) + toggle
 - [x] Responsive kanban list view (board/list toggle)
 - [x] PWA / offline support (`vite-plugin-pwa`)
 - [ ] Internationalization (`react-i18next`)
