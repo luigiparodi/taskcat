@@ -1,17 +1,17 @@
-# Cat Task — Client
+# TaskCat — Client
 
-Vite + React + TypeScript SPA. Auth flow, projects list, kanban board with drag-and-drop, task detail dialog, AI-assisted task import, and admin area (projects, members, users with role management).
+Vite + React + TypeScript SPA. Auth flow, projects list, kanban board with drag-and-drop, task detail dialog, AI-assisted task import, Excel export, and admin area (projects, members, users with role management).
 
 ## Architecture
 
 ```
 src/
-├── components/     shared UI (AppHeader) and ui/ primitives
+├── components/     shared UI (AppHeader, Footer, CommandPalette) and ui/ primitives
 ├── features/       feature folders: auth, projects, admin
 ├── lib/            api client, hooks, utilities
 ├── test/           vitest setup + render harness
 ├── App.tsx         routes + lazy-loaded pages
-└── main.tsx        providers: QueryClient > Router > Auth > App
+└── main.tsx        providers: Theme > QueryClient > Router > Auth > App
 ```
 
 Conventions: **logic lives in hooks, presentational code in `*View.tsx`, pages orchestrate.** Feature code lives in `features/{feature}/`.
@@ -21,6 +21,8 @@ Conventions: **logic lives in hooks, presentational code in `*View.tsx`, pages o
 - **Routing** — `react-router-dom` v7. Routes: `/login`, `/register`, `/projects`, `/projects/:projectId` (board), `/admin/projects`, `/admin/users`. `BoardPage` is lazy-loaded; protected routes go through `RequireAuth` / `RequireAdmin` with loading states (no login flash).
 - **Server State** — `@tanstack/react-query` v5. Kanban drag-and-drop (`@dnd-kit`); optimistic status updates via `onMutate`/`onError`/`onSettled`. Retries skip 401/403/404/422.
 - **Auth** — `AuthProvider` reads stored token synchronously for instant loading state. Context + hook in separate files (`auth-context.ts` / `AuthProvider.tsx`) for `react-refresh/only-export-components`.
+- **Theme** — `next-themes` with a class attribute; dark is the default and `.light` overrides the tokens in `src/index.css`.
+- **Export** — `projectsApi.downloadExport()` fetches the generated `.xlsx` with the auth header and triggers a browser download.
 
 ---
 
@@ -42,22 +44,22 @@ Conventions: **logic lives in hooks, presentational code in `*View.tsx`, pages o
 
 ## Design System & Styling
 
-- **Tailwind CSS v4** via `@tailwindcss/vite`; tokens in `src/index.css` → `design-tokens.json`. Dark mode supported.
-- **Apple-esque direction**, self-hosted **Geist Variable** font (`@fontsource-variable/geist`).
-- **Components** — `src/components/ui/` holds `button`, `field`, `input`, `textarea`, `badge`, `card`, `dialog`, `alert-dialog`, `select`, `dropdown-menu` on Radix primitives with shared `cn` from `@/lib/utils`.
-- **Accessibility** — WCAG 2.1 AA. Colour pairings validated; three border tiers (`--border`, `--border-strong`, `--input`). `StatusBadge`/`PriorityBadge` typed against backend enums (duplicated in `badge.tsx` — update both).
+- **Tailwind CSS v4** via `@tailwindcss/vite`. All design tokens live in `src/index.css` — it is the single source of truth (there is no separate token JSON export).
+- **Monochrome neutral palette** — black, white and greys only. Semantic states stay distinguishable through luminosity, borders and inverted chips rather than hue.
+- **Theming** — dark is the default (`:root`); the light theme is the `.light` class on `<html>`, managed by `next-themes` and toggled from `AppHeader`.
+- **Typography** — self-hosted **Geist Variable** (`@fontsource-variable/geist`) with a 9-level type scale.
+- **Components** — `src/components/ui/` holds `button`, `field`, `input`, `textarea`, `badge`, `card`, `dialog`, `alert-dialog`, `select`, `dropdown-menu`, `table`, and more on Radix primitives with shared `cn` from `@/lib/utils`.
+- **Accessibility** — WCAG 2.1 AA intent. Colour pairings validated; three border tiers (`--border`, `--border-strong`, `--input`). `StatusBadge`/`PriorityBadge` are typed against backend enums (duplicated in `badge.tsx` — update both).
 
 ---
 
 ## Testing
 
-Vitest + jsdom + Testing Library. Config in `vitest.config.ts` (separate from `vite.config.ts` for React plugin).
+Vitest and Testing Library are installed, but the client has no test suites checked in
+yet. Backend tests are the enforced safety net (`server/src/__tests__`).
 
-- `npm test` — run once; `npm run test:watch` — watch mode.
-- `src/test/setup.ts` registers jest-dom matchers, RTL cleanup, pointer-capture/scrollIntoView polyfills for Radix Select, `afterEach` sweep.
-- `src/test/harness.tsx` exports `renderWithProviders` + `ADMIN_USER`/`WORKER_USER` for components using `useAuth()`/`useNavigate()`.
-
-> Run `npm test`, `npm run lint`, and `tsc -b` together — class-merging and Tailwind tree-shaking faults are invisible to any one alone.
+> Run `npm run lint` and `npm run build` before pushing — class-merging and Tailwind
+> tree-shaking faults are invisible to TypeScript alone.
 
 ---
 
@@ -69,6 +71,7 @@ Vitest + jsdom + Testing Library. Config in `vitest.config.ts` (separate from `v
 | `npm run build` | Type-check (`tsc -b`) + production build |
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
+| `npm run format` | Prettier |
 | `npm test` / `npm run test:watch` | Vitest |
 
 ---

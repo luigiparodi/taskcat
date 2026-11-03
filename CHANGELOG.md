@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-11-02
+
+### Added
+- Excel export for projects (`GET /projects/:id/export`) with **Project**, **Members** and **Tasks** sheets, styled headers, status/priority fills, frozen header rows and auto-filters
+- "Export Excel" action on every project board, available to all project members
+- Drag overlay preview while moving tasks on the kanban board
+- Auth API contract tests covering `/auth/me`, `/auth/refresh` and unknown routes
+
+### Changed
+- Replaced the brand palette with a monochrome neutral token system (black, white and greys) for both themes; primary actions now invert (white on dark, black on light)
+- Rebuilt the login and register shell on shadcn surface tokens instead of hardcoded dark gradients
+- Flattened the footer and removed the animated Apple-style glow layers
+- Links now use underline affordances and the GitHub OAuth button uses neutral tokens instead of blue/grey brand colors
+- Added `exceljs` to the server for spreadsheet generation
+- Client version aligned with the server at `1.4.0`
+
+### Removed
+- `client/DESIGN_SYSTEM.md` and `client/design-tokens.json`; `client/src/index.css` is the single source of truth for design tokens
+- Unused `@tanstack/react-table` dependency
+
 ## [1.3.0] - 2026-11-02
 
 ### Added
@@ -113,6 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[1.4.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.4.0
+[1.3.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.3.0
 [1.2.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.2.0
 [1.1.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.1.0
 [1.0.0]: https://github.com/luigiparodi/taskcat/releases/tag/v1.0.0

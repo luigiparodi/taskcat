@@ -44,10 +44,12 @@ Prioritized backlog for TaskCat. Checkboxes mark completion. Priorities: **P0** 
 - [x] Markdown rendering for task descriptions
 - [x] Drag-and-drop polish (drag overlay preview)
 - [x] Dark mode: proper dark/light themes (dark default, .light class) + toggle
+- [x] Monochrome neutral design system (black/white/grey tokens, no brand hues)
+- [x] Project Excel export (Project, Members, Tasks sheets)
 - [x] Responsive kanban list view (board/list toggle)
 - [x] PWA / offline support (`vite-plugin-pwa`)
 - [ ] Internationalization (`react-i18next`)
-- [ ] Admin tables with `@tanstack/react-table`
+- [ ] Admin tables with sorting/filtering
 - [x] File upload UX with `react-dropzone`
 - [ ] Mobile bottom-sheet task detail (`vaul`)
 

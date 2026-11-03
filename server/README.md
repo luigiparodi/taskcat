@@ -1,6 +1,6 @@
-# Cat Task — Server
+# TaskCat — Server
 
-Express 5 + TypeScript API backed by MongoDB (native driver). Built in chunks (Authentication → Users → Projects → Tasks → AI/Import → Admin), each with tests.
+Express 5 + TypeScript API backed by MongoDB (native driver). Authentication, users, projects, tasks, AI import, Excel export, and admin analytics — each with authorization gates in the service layer.
 
 ## Architecture
 
@@ -32,25 +32,28 @@ src/
 | Variable | Purpose |
 |----------|---------|
 | `PORT` | HTTP port (default `3000`) |
+| `NODE_ENV` | `production` enables fail-fast secret validation |
 | `DATABASE_URL` | MongoDB connection string (Atlas `mongodb+srv://…`) |
 | `DATABASE_NAME` | DB name (e.g. `taskcat`) |
-| `JWT_SECRET` | Signs access tokens (15m) |
-| `JWT_REFRESH_SECRET` | Signs refresh tokens (7d) |
+| `JWT_SECRET` | Signs access tokens (15m) and refresh tokens (7d, tracked in `refresh_tokens`) |
+| `FRONTEND_URL` | Origin the GitHub OAuth callback redirects back to |
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth app secret |
-| `GITHUB_CALLBACK_URL` | OAuth redirect (e.g. `https://api.onrender.com/auth/github/callback`) |
-| `CORS_ORIGINS` | Comma-separated origins. Blank → Vite dev origins only |
+| `CORS_ORIGINS` | Comma-separated allowed origins. Blank → Vite dev origins only |
 | `LOG_LEVEL` | Winston level (`error` `warn` `info`…). Default `info`, `error` in test |
 | `GEMINI_API_KEY` | Google Gemini key for AI import |
 | `GEMINI_MODEL` | Model id (default `gemini-flash-latest`) |
 | `GEMINI_FALLBACK_MODELS` | Fallback models (comma-separated) |
 
+> `JWT_REFRESH_SECRET` is reserved for a future separate refresh-token secret but is
+> not read yet; both token types are currently signed with `JWT_SECRET`.
+
 ---
 
 ## API Endpoints
 
-Mounted at `/auth`, `/users`, `/projects`, `/admin` — **no `/api` prefix**.  
-Swagger UI at `/api-docs` (dev only). `ENDPOINTS.md` in repo root.
+Mounted at `/auth`, `/users`, `/projects`, `/admin` — **no `/api` prefix**.
+Swagger UI at `/api-docs` (dev only).
 
 ### Authentication — `/auth`
 
@@ -83,6 +86,7 @@ Swagger UI at `/api-docs` (dev only). `ENDPOINTS.md` in repo root.
 | POST | `/projects` | admin | Create (creator = project admin) |
 | GET | `/projects` | user | List (admin: all; worker: assigned) |
 | GET | `/projects/:id` | member/admin | Details |
+| GET | `/projects/:id/export` | member/admin | Download a formatted `.xlsx` (Project, Members, Tasks) |
 | PUT | `/projects/:id` | admin | Update |
 | DELETE | `/projects/:id` | admin | Delete (cascades) |
 | POST | `/projects/:id/activate` | admin | Reactivate |
@@ -137,16 +141,21 @@ Converts requirements docs → draft tasks (preview only, persisted via `import/
 
 ### Health
 
-`GET /health` → `{ "status": "ok" }` (unauthenticated, liveness probe)
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/health` | public | Liveness probe (`{ "status": "ok" }`) |
+| GET | `/ready` | public | Readiness probe, including a MongoDB ping |
 
 ---
 
 ## Testing
 
-- `npm test` — unit/integration with mocked DB (`jest.mock('../config/database')`). Authenticated routes must serve `requireAuth`'s account-status lookup (see `src/__tests__/helpers/index.ts`).
-- `npm run test:contracts` — cross-chunk tests against real in-memory MongoDB (`mongodb-memory-server`), no mocks. 5 suites: project-delete cascade, user-delete session revocation, member-add validation, member-removal vs assigned tasks, user-delete vs assigned tasks/comments/history.
-- `npm run test:coverage` — thresholds 70% lines/branches/functions (~85% actual).
-- Factories in `src/__tests__/factories/` — reuse for new endpoint tests.
+- `npm test` — Jest suite: `/health` smoke test and auth API contract tests
+  (`/auth/me`, `/auth/refresh`, unknown routes). No database required.
+- `npm run test:contracts` — path-filtered run (`*contract*`) for contract suites.
+- `npm run test:coverage` — coverage report.
+
+Tests live in `src/__tests__`. Add new endpoint tests beside the existing suites.
 
 ---
 
@@ -158,19 +167,23 @@ Converts requirements docs → draft tasks (preview only, persisted via `import/
 | `npm run build` | Type-check + emit to `dist/` |
 | `npm start` | Run built server |
 | `npm test` / `npm run test:watch` | Jest |
-| `npm run test:contracts` | Contract tests |
-| `npm run lint` | ESLint (not currently a dependency) |
+| `npm run test:contracts` | Contract test run |
+| `npm run format` | Prettier |
 
-> Note: `lint` script defined but `eslint` not installed. `npm run build` / `tsc` is the effective static check.
+> `npm run lint` is defined but ESLint is not installed in this workspace; `npm run build`
+> (`tsc`) is the effective static check.
 
 ---
 
 ## Production Deploy (Render)
 
-1. **Blueprint** — `render.yaml` defines service, build/start commands, env vars
-2. **Env vars required** — `MONGODB_URI`, `GITHUB_CLIENT_ID/SECRET`, `GEMINI_API_KEY`
-3. **Auto-generated** — `JWT_SECRET`, `JWT_REFRESH_SECRET`
-4. **CORS** — Set `CORS_ORIGINS=https://your-vercel-app.vercel.app` after Vercel deploy
+1. **Blueprint** — `render.yaml` defines the service, build/start commands and env vars
+2. **Required env vars** — `DATABASE_URL`, `GITHUB_CLIENT_ID`/`SECRET`, `GEMINI_API_KEY`,
+   `CORS_ORIGINS`, `FRONTEND_URL`
+3. **Generated** — `JWT_SECRET` (and the reserved `JWT_REFRESH_SECRET`)
+4. **OAuth** — the callback URL belongs to the frontend (`<frontend>/auth/github/callback`),
+   configured in the GitHub OAuth App
+5. **CORS** — set `CORS_ORIGINS` to the deployed frontend origin
 
 ```yaml
 # render.yaml (already in repo root)
@@ -178,6 +191,6 @@ services:
   - type: web
     name: taskcat-api
     env: node
-    buildCommand: cd server && npm ci && npm run build
+    buildCommand: cd server && npm ci --include=dev && npm run build
     startCommand: cd server && npm start
 ```
