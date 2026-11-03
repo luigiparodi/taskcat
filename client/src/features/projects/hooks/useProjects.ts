@@ -22,7 +22,7 @@ export function useProjects() {
       search: debouncedSearch.trim() || undefined,
       status: status === "all" ? undefined : status,
     }),
-    [page, debouncedSearch, status]
+    [page, debouncedSearch, status],
   );
 
   const { data, isPending, isError, error, refetch } = useQuery({

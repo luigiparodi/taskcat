@@ -60,7 +60,9 @@ export const projectsApi = {
     return api.get<ProjectMembersResult>(`/projects/${projectId}/members`);
   },
   availableUsers(projectId: string, filters: AvailableUsersFilters = {}) {
-    return api.get<AvailableUsersResult>(`/projects/${projectId}/available-users${buildQuery({ ...filters })}`);
+    return api.get<AvailableUsersResult>(
+      `/projects/${projectId}/available-users${buildQuery({ ...filters })}`,
+    );
   },
   addMembers(projectId: string, userIds: string[]) {
     return api.post<ProjectMembersResult>(`/projects/${projectId}/members`, { userIds });

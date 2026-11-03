@@ -42,15 +42,13 @@ export function useTaskCard({
   const canMove = canManage || isAssignee;
 
   const isOverdue =
-    task.status !== "finished" && task.endDate
-      ? new Date(task.endDate).getTime() < nowMs
-      : false;
+    task.status !== "finished" && task.endDate ? new Date(task.endDate).getTime() < nowMs : false;
 
   const assigneeName = task.assignedTo ? memberNames.get(task.assignedTo) : undefined;
 
   const currentLabel = React.useMemo(
     () => STATUS_OPTIONS.find((option) => option.value === task.status)?.label ?? task.status,
-    [task.status]
+    [task.status],
   );
 
   const statusItems = React.useMemo(
@@ -59,17 +57,17 @@ export function useTaskCard({
         value: option.value,
         label: option.value === task.status ? option.label : `Move to ${option.label}`,
       })),
-    [task.status]
+    [task.status],
   );
 
   const dueLabel = React.useMemo(
     () => (task.endDate ? formatDueDate(task.endDate) : null),
-    [task.endDate]
+    [task.endDate],
   );
 
   const hoursLabel = React.useMemo(
     () => (task.estimatedHours ? `${task.estimatedHours}h` : null),
-    [task.estimatedHours]
+    [task.estimatedHours],
   );
 
   const moveLabel = `Move ${task.title} to another column`;

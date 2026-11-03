@@ -15,15 +15,7 @@ const STATUS_SEGMENTS = [
   { key: "finished", label: "Finished", className: "bg-chart-3" },
 ] as const;
 
-function StatTile({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone?: "danger";
-}) {
+function StatTile({ label, value, tone }: { label: string; value: number; tone?: "danger" }) {
   return (
     <div className="rounded-card border border-border bg-surface-1 p-4 shadow-card">
       <dt className="text-caption text-muted-foreground">{label}</dt>
@@ -206,7 +198,10 @@ export function AdminAnalyticsView({
                           className="mt-3 h-2 w-full overflow-hidden rounded-button bg-muted"
                         >
                           <div
-                            className={cn("h-full rounded-button", completion === 0 ? "bg-muted" : "bg-chart-3")}
+                            className={cn(
+                              "h-full rounded-button",
+                              completion === 0 ? "bg-muted" : "bg-chart-3",
+                            )}
                             style={{ width: `${completion}%` }}
                           />
                         </div>
@@ -256,13 +251,16 @@ export function AdminAnalyticsView({
                         className="mt-3 h-2 w-full overflow-hidden rounded-button bg-muted"
                       >
                         <div
-                          className={cn("h-full rounded-button", project.progress === 0 ? "bg-muted" : "bg-chart-3")}
+                          className={cn(
+                            "h-full rounded-button",
+                            project.progress === 0 ? "bg-muted" : "bg-chart-3",
+                          )}
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
                       <p className="mt-2 text-caption tabular-nums text-muted-foreground">
-                        {project.pending} pending · {project.working} in progress · {project.finished} done ·{" "}
-                        {project.progress}% complete
+                        {project.pending} pending · {project.working} in progress ·{" "}
+                        {project.finished} done · {project.progress}% complete
                       </p>
                     </li>
                   ))}

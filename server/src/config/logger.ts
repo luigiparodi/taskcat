@@ -1,6 +1,6 @@
-import winston from 'winston';
+import winston from "winston";
 
-const level = process.env.LOG_LEVEL ?? (process.env.NODE_ENV === 'test' ? 'error' : 'info');
+const level = process.env.LOG_LEVEL ?? (process.env.NODE_ENV === "test" ? "error" : "info");
 
 /**
  * Application logger. Level comes from LOG_LEVEL, defaulting to 'error' under
@@ -13,13 +13,13 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
         winston.format.printf(({ level: lvl, message, timestamp, stack, ...meta }) => {
-          const rest = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-          return `${timestamp} ${lvl.toUpperCase()}: ${message}${stack ? ` ${stack}` : ''}${rest}`;
-        })
+          const rest = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : "";
+          return `${timestamp} ${lvl.toUpperCase()}: ${message}${stack ? ` ${stack}` : ""}${rest}`;
+        }),
       ),
     }),
   ],
-  silent: process.env.NODE_ENV === 'test' && process.env.LOG_LEVEL === undefined,
+  silent: process.env.NODE_ENV === "test" && process.env.LOG_LEVEL === undefined,
 });

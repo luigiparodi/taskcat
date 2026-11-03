@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   activateProjectHandler,
   addMembersHandler,
@@ -12,14 +12,14 @@ import {
   listProjectsHandler,
   removeMemberHandler,
   updateProjectHandler,
-} from '../controllers/ProjectController';
+} from "../controllers/ProjectController";
 import {
   importCreateHandler,
   importDocxHandler,
   importMarkdownHandler,
   importPdfHandler,
-} from '../controllers/ImportController';
-import { uploadImportFile } from '../middleware/upload';
+} from "../controllers/ImportController";
+import { uploadImportFile } from "../middleware/upload";
 import {
   bulkCreateTasksHandler,
   createTaskCommentHandler,
@@ -37,8 +37,8 @@ import {
   filterTasksHandler,
   updateTaskHandler,
   updateTaskStatusHandler,
-} from '../controllers/TaskController';
-import { requireAuth, requireRole } from '../middleware/auth';
+} from "../controllers/TaskController";
+import { requireAuth, requireRole } from "../middleware/auth";
 
 const router = Router();
 
@@ -87,7 +87,7 @@ const router = Router();
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/', requireAuth, listProjectsHandler);
+router.get("/", requireAuth, listProjectsHandler);
 
 /**
  * @openapi
@@ -118,7 +118,7 @@ router.get('/', requireAuth, listProjectsHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:id', requireAuth, getProjectHandler);
+router.get("/:id", requireAuth, getProjectHandler);
 
 /**
  * @openapi
@@ -165,7 +165,7 @@ router.get('/:id', requireAuth, getProjectHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:id/members', requireAuth, listMembersHandler);
+router.get("/:id/members", requireAuth, listMembersHandler);
 
 /**
  * @openapi
@@ -224,7 +224,7 @@ router.get('/:id/members', requireAuth, listMembersHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:id/available-users', requireAuth, listAvailableUsersHandler);
+router.get("/:id/available-users", requireAuth, listAvailableUsersHandler);
 
 /**
  * @openapi
@@ -283,7 +283,7 @@ router.get('/:id/available-users', requireAuth, listAvailableUsersHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:id/statistics', requireAuth, getProjectStatisticsHandler);
+router.get("/:id/statistics", requireAuth, getProjectStatisticsHandler);
 
 /**
  * @openapi
@@ -332,7 +332,7 @@ router.get('/:id/statistics', requireAuth, getProjectStatisticsHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:id/members', requireAuth, addMembersHandler);
+router.post("/:id/members", requireAuth, addMembersHandler);
 
 /**
  * @openapi
@@ -373,7 +373,7 @@ router.post('/:id/members', requireAuth, addMembersHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:id/members/:userId', requireAuth, removeMemberHandler);
+router.delete("/:id/members/:userId", requireAuth, removeMemberHandler);
 
 /**
  * @openapi
@@ -418,7 +418,7 @@ router.delete('/:id/members/:userId', requireAuth, removeMemberHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.put('/:id', requireAuth, requireRole('admin'), updateProjectHandler);
+router.put("/:id", requireAuth, requireRole("admin"), updateProjectHandler);
 
 /**
  * @openapi
@@ -453,7 +453,7 @@ router.put('/:id', requireAuth, requireRole('admin'), updateProjectHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:id', requireAuth, requireRole('admin'), deleteProjectHandler);
+router.delete("/:id", requireAuth, requireRole("admin"), deleteProjectHandler);
 
 /**
  * @openapi
@@ -492,7 +492,7 @@ router.delete('/:id', requireAuth, requireRole('admin'), deleteProjectHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:id/deactivate', requireAuth, requireRole('admin'), deactivateProjectHandler);
+router.post("/:id/deactivate", requireAuth, requireRole("admin"), deactivateProjectHandler);
 
 /**
  * @openapi
@@ -523,7 +523,7 @@ router.post('/:id/deactivate', requireAuth, requireRole('admin'), deactivateProj
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:id/activate', requireAuth, requireRole('admin'), activateProjectHandler);
+router.post("/:id/activate", requireAuth, requireRole("admin"), activateProjectHandler);
 
 /**
  * @openapi
@@ -561,7 +561,7 @@ router.post('/:id/activate', requireAuth, requireRole('admin'), activateProjectH
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/', requireAuth, requireRole('admin'), createProjectHandler);
+router.post("/", requireAuth, requireRole("admin"), createProjectHandler);
 
 /**
  * @openapi
@@ -608,7 +608,7 @@ router.post('/', requireAuth, requireRole('admin'), createProjectHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:projectId/tasks', requireAuth, createTaskHandler);
+router.post("/:projectId/tasks", requireAuth, createTaskHandler);
 
 /**
  * @openapi
@@ -664,7 +664,7 @@ router.post('/:projectId/tasks', requireAuth, createTaskHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks', requireAuth, listTasksHandler);
+router.get("/:projectId/tasks", requireAuth, listTasksHandler);
 
 /**
  * @openapi
@@ -723,7 +723,7 @@ router.get('/:projectId/tasks', requireAuth, listTasksHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/search', requireAuth, searchTasksHandler);
+router.get("/:projectId/tasks/search", requireAuth, searchTasksHandler);
 
 /**
  * @openapi
@@ -787,7 +787,7 @@ router.get('/:projectId/tasks/search', requireAuth, searchTasksHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/filter', requireAuth, filterTasksHandler);
+router.get("/:projectId/tasks/filter", requireAuth, filterTasksHandler);
 
 /**
  * @openapi
@@ -823,7 +823,7 @@ router.get('/:projectId/tasks/filter', requireAuth, filterTasksHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/:taskId', requireAuth, getTaskHandler);
+router.get("/:projectId/tasks/:taskId", requireAuth, getTaskHandler);
 
 /**
  * @openapi
@@ -878,7 +878,7 @@ router.get('/:projectId/tasks/:taskId', requireAuth, getTaskHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.put('/:projectId/tasks/:taskId', requireAuth, updateTaskHandler);
+router.put("/:projectId/tasks/:taskId", requireAuth, updateTaskHandler);
 
 /**
  * @openapi
@@ -912,7 +912,7 @@ router.put('/:projectId/tasks/:taskId', requireAuth, updateTaskHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:projectId/tasks/:taskId', requireAuth, deleteTaskHandler);
+router.delete("/:projectId/tasks/:taskId", requireAuth, deleteTaskHandler);
 
 /**
  * @openapi
@@ -960,7 +960,7 @@ router.delete('/:projectId/tasks/:taskId', requireAuth, deleteTaskHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.patch('/:projectId/tasks/:taskId/status', requireAuth, updateTaskStatusHandler);
+router.patch("/:projectId/tasks/:taskId/status", requireAuth, updateTaskStatusHandler);
 
 /**
  * @openapi
@@ -1018,7 +1018,7 @@ router.patch('/:projectId/tasks/:taskId/status', requireAuth, updateTaskStatusHa
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:projectId/tasks/bulk', requireAuth, bulkCreateTasksHandler);
+router.post("/:projectId/tasks/bulk", requireAuth, bulkCreateTasksHandler);
 
 /**
  * @openapi
@@ -1093,7 +1093,7 @@ router.post('/:projectId/tasks/bulk', requireAuth, bulkCreateTasksHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:projectId/tasks/import/markdown', requireAuth, importMarkdownHandler);
+router.post("/:projectId/tasks/import/markdown", requireAuth, importMarkdownHandler);
 
 /**
  * @openapi
@@ -1132,10 +1132,10 @@ router.post('/:projectId/tasks/import/markdown', requireAuth, importMarkdownHand
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.post(
-  '/:projectId/tasks/import/pdf',
+  "/:projectId/tasks/import/pdf",
   requireAuth,
-  uploadImportFile.single('file'),
-  importPdfHandler
+  uploadImportFile.single("file"),
+  importPdfHandler,
 );
 
 /**
@@ -1175,10 +1175,10 @@ router.post(
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.post(
-  '/:projectId/tasks/import/docx',
+  "/:projectId/tasks/import/docx",
   requireAuth,
-  uploadImportFile.single('file'),
-  importDocxHandler
+  uploadImportFile.single("file"),
+  importDocxHandler,
 );
 
 /**
@@ -1233,7 +1233,7 @@ router.post(
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/:projectId/tasks/import/create', requireAuth, importCreateHandler);
+router.post("/:projectId/tasks/import/create", requireAuth, importCreateHandler);
 
 /**
  * @openapi
@@ -1276,7 +1276,7 @@ router.post('/:projectId/tasks/import/create', requireAuth, importCreateHandler)
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/:taskId/history', requireAuth, getTaskHistoryHandler);
+router.get("/:projectId/tasks/:taskId/history", requireAuth, getTaskHistoryHandler);
 
 /**
  * @openapi
@@ -1355,8 +1355,8 @@ router.get('/:projectId/tasks/:taskId/history', requireAuth, getTaskHistoryHandl
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/:taskId/comments', requireAuth, getTaskCommentsHandler);
-router.post('/:projectId/tasks/:taskId/comments', requireAuth, createTaskCommentHandler);
+router.get("/:projectId/tasks/:taskId/comments", requireAuth, getTaskCommentsHandler);
+router.post("/:projectId/tasks/:taskId/comments", requireAuth, createTaskCommentHandler);
 
 /**
  * @openapi
@@ -1394,7 +1394,11 @@ router.post('/:projectId/tasks/:taskId/comments', requireAuth, createTaskComment
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:projectId/tasks/:taskId/comments/:commentId', requireAuth, deleteTaskCommentHandler);
+router.delete(
+  "/:projectId/tasks/:taskId/comments/:commentId",
+  requireAuth,
+  deleteTaskCommentHandler,
+);
 
 /**
  * @openapi
@@ -1475,8 +1479,8 @@ router.delete('/:projectId/tasks/:taskId/comments/:commentId', requireAuth, dele
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:projectId/tasks/:taskId/links', requireAuth, getTaskLinksHandler);
-router.post('/:projectId/tasks/:taskId/links', requireAuth, createTaskLinkHandler);
+router.get("/:projectId/tasks/:taskId/links", requireAuth, getTaskLinksHandler);
+router.post("/:projectId/tasks/:taskId/links", requireAuth, createTaskLinkHandler);
 
 /**
  * @openapi
@@ -1514,8 +1518,6 @@ router.post('/:projectId/tasks/:taskId/links', requireAuth, createTaskLinkHandle
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:projectId/tasks/:taskId/links/:linkId', requireAuth, deleteTaskLinkHandler);
+router.delete("/:projectId/tasks/:taskId/links/:linkId", requireAuth, deleteTaskLinkHandler);
 
 export default router;
-
-

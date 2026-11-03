@@ -11,13 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ProjectStatus } from "@/lib/api/types";
@@ -68,11 +62,7 @@ export function AdminProjectsView({
         </Field>
 
         <div className="flex items-center gap-2">
-          <div
-            role="group"
-            aria-label="Filter by status"
-            className="flex gap-2"
-          >
+          <div role="group" aria-label="Filter by status" className="flex gap-2">
             {FILTERS.map((filter) => (
               <Button
                 key={filter.value}
@@ -116,10 +106,7 @@ export function AdminProjectsView({
         </div>
       ) : projects.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-card border border-dashed border-border-strong px-6 py-16 text-center">
-          <FolderKanban
-            aria-hidden="true"
-            className="size-6 text-muted-foreground"
-          />
+          <FolderKanban aria-hidden="true" className="size-6 text-muted-foreground" />
           <p className="text-body font-medium">No projects found</p>
           <p className="text-caption text-muted-foreground">
             {search || status !== "all"
@@ -148,11 +135,7 @@ export function AdminProjectsView({
                         <CardDescription>{project.clientName}</CardDescription>
                       ) : null}
                     </div>
-                    <Badge
-                      tone={isActive ? "success" : "neutral"}
-                      dot
-                      className="mt-px shrink-0"
-                    >
+                    <Badge tone={isActive ? "success" : "neutral"} dot className="mt-px shrink-0">
                       {isActive ? "Active" : "Inactive"}
                     </Badge>
                   </CardHeader>
@@ -198,11 +181,7 @@ export function AdminProjectsView({
                         size="icon-sm"
                         variant="ghost"
                         aria-label={isActive ? "Deactivate" : "Activate"}
-                        title={
-                          isActive
-                            ? "Deactivate project"
-                            : "Activate project"
-                        }
+                        title={isActive ? "Deactivate project" : "Activate project"}
                         disabled={setProjectStatus.isPending}
                         onClick={() =>
                           setProjectStatus.mutate({
@@ -237,20 +216,12 @@ export function AdminProjectsView({
       )}
 
       {totalPages > 1 ? (
-        <nav
-          aria-label="Pagination"
-          className="mt-8 flex items-center justify-between gap-4"
-        >
+        <nav aria-label="Pagination" className="mt-8 flex items-center justify-between gap-4">
           <p className="text-caption text-muted-foreground">
             Page {page} of {totalPages} - {total} projects
           </p>
           <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={handlePreviousPage}
-            >
+            <Button size="sm" variant="outline" disabled={page <= 1} onClick={handlePreviousPage}>
               Previous
             </Button>
             <Button

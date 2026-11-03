@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   changePasswordHandler,
   githubCallbackHandler,
@@ -8,8 +8,8 @@ import {
   meHandler,
   refreshHandler,
   registerHandler,
-} from '../controllers/AuthController';
-import { requireAuth } from '../middleware/auth';
+} from "../controllers/AuthController";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
@@ -43,7 +43,7 @@ const router = Router();
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/register', registerHandler);
+router.post("/register", registerHandler);
 
 /**
  * @openapi
@@ -58,7 +58,7 @@ router.post('/register', registerHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/github', githubLoginHandler);
+router.get("/github", githubLoginHandler);
 
 /**
  * @openapi
@@ -93,7 +93,7 @@ router.get('/github', githubLoginHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/login', loginHandler);
+router.post("/login", loginHandler);
 
 /**
  * @openapi
@@ -124,7 +124,7 @@ router.post('/login', loginHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/logout', requireAuth, logoutHandler);
+router.post("/logout", requireAuth, logoutHandler);
 
 /**
  * @openapi
@@ -154,7 +154,7 @@ router.post('/logout', requireAuth, logoutHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/github/callback', githubCallbackHandler);
+router.post("/github/callback", githubCallbackHandler);
 
 /**
  * @openapi
@@ -186,7 +186,7 @@ router.post('/github/callback', githubCallbackHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/refresh', refreshHandler);
+router.post("/refresh", refreshHandler);
 
 /**
  * @openapi
@@ -212,7 +212,7 @@ router.post('/refresh', refreshHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/me', requireAuth, meHandler);
+router.get("/me", requireAuth, meHandler);
 
 /**
  * @openapi
@@ -249,8 +249,6 @@ router.get('/me', requireAuth, meHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.post('/change-password', requireAuth, changePasswordHandler);
+router.post("/change-password", requireAuth, changePasswordHandler);
 
 export default router;
-
-

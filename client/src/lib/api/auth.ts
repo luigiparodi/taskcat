@@ -1,9 +1,5 @@
 import { api } from "@/lib/api/client";
-import type {
-  PublicUser,
-  RefreshResult,
-  SessionResult,
-} from "@/lib/api/types";
+import type { PublicUser, RefreshResult, SessionResult } from "@/lib/api/types";
 
 interface RegisterInput {
   email: string;

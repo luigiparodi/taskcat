@@ -6,38 +6,33 @@ import { RegisterPage } from "@/features/auth/RegisterPage";
 import { GithubCallbackPage } from "@/features/auth/GithubCallbackPage";
 import { ProjectsPage } from "@/features/projects/ProjectsPage";
 import { AdminLayout } from "@/features/admin/AdminLayout";
+import { CommandPalette } from "@/components/CommandPalette";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Footer } from "@/components/Footer";
 
 const BoardPage = lazy(() =>
-  import("@/features/projects/BoardPage").then((module) => ({ default: module.BoardPage }))
+  import("@/features/projects/BoardPage").then((module) => ({ default: module.BoardPage })),
 );
 
 const AdminProjectsPage = lazy(() =>
   import("@/features/admin/AdminProjectsPage").then((module) => ({
     default: module.AdminProjectsPage,
-  }))
+  })),
 );
 
 const AdminUsersPage = lazy(() =>
   import("@/features/admin/AdminUsersPage").then((module) => ({
     default: module.AdminUsersPage,
-  }))
+  })),
 );
 
 const AdminAnalyticsPage = lazy(() =>
   import("@/features/admin/AdminAnalyticsPage").then((module) => ({
     default: module.AdminAnalyticsPage,
-  }))
+  })),
 );
 
-function FullPageMessage({
-  title,
-  detail,
-}: {
-  title: string;
-  detail?: string;
-}) {
+function FullPageMessage({ title, detail }: { title: string; detail?: string }) {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-6">
       <p className="text-body text-muted-foreground">{title}</p>
@@ -84,47 +79,48 @@ export default function App() {
   return (
     <ErrorBoundary>
       <Suspense fallback={<FullPageMessage title="Loading" />}>
-      <div className="min-h-screen bg-background">
-        <main className="pb-20">
-          <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/auth/github/callback" element={<GithubCallbackPage />} />
-          <Route
-            path="/projects"
-            element={
-              <RequireAuth>
-                <ProjectsPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/projects/:projectId"
-            element={
-              <RequireAuth>
-                <BoardPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <RequireAdmin>
-                <AdminLayout />
-              </RequireAdmin>
-            }
-          >
-            <Route index element={<Navigate to="/admin/projects" replace />} />
-            <Route path="projects" element={<AdminProjectsPage />} />
-            <Route path="users" element={<AdminUsersPage />} />
-            <Route path="analytics" element={<AdminAnalyticsPage />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/projects" replace />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Suspense>
+        <div className="min-h-screen bg-background">
+          <main className="pb-20">
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/auth/github/callback" element={<GithubCallbackPage />} />
+              <Route
+                path="/projects"
+                element={
+                  <RequireAuth>
+                    <ProjectsPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/projects/:projectId"
+                element={
+                  <RequireAuth>
+                    <BoardPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout />
+                  </RequireAdmin>
+                }
+              >
+                <Route index element={<Navigate to="/admin/projects" replace />} />
+                <Route path="projects" element={<AdminProjectsPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="analytics" element={<AdminAnalyticsPage />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/projects" replace />} />
+            </Routes>
+          </main>
+          <Footer />
+          <CommandPalette />
+        </div>
+      </Suspense>
     </ErrorBoundary>
   );
 }

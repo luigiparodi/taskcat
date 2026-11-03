@@ -1,88 +1,54 @@
 import * as React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AtSign, Eye, EyeOff, KeyRound, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { GitHubLoginButton } from "@/features/auth/OAuthButtons";
-import {
-  Field,
-  FieldError,
-  FieldHint,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldHint, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AuthShell, FormError } from "@/features/auth/AuthShell";
 import { useAuth } from "@/features/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD = 8;
-
-type Errors = {
-  name?: string;
-  email?: string;
-  password?: string;
-  confirm?: string;
-};
+import { registerSchema, type RegisterValues } from "@/features/auth/schemas";
 
 export function RegisterPage() {
   const { status, register } = useAuth();
   const navigate = useNavigate();
-
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [confirm, setConfirm] = React.useState("");
-  const [errors, setErrors] = React.useState<Errors>({});
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
 
+  const form = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: "", email: "", password: "", confirm: "" },
+  });
+
   if (status === "authenticated") {
     return <Navigate to="/projects" replace />;
   }
 
-  function validate(): Errors {
-    const next: Errors = {};
-    const trimmedName = name.trim();
-    if (trimmedName.length < 2 || trimmedName.length > 50) {
-      next.name = "Name must be between 2 and 50 characters";
-    }
-    if (!EMAIL_REGEX.test(email.trim())) {
-      next.email = "Enter a valid email address";
-    }
-    if (password.length < MIN_PASSWORD) {
-      next.password = `Password must be at least ${MIN_PASSWORD} characters`;
-    }
-    if (confirm !== password) {
-      next.confirm = "Passwords do not match";
-    }
-    return next;
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function onSubmit(values: RegisterValues) {
     setFormError(null);
-
-    const nextErrors = validate();
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
-
     setSubmitting(true);
     try {
-      await register(name.trim(), email.trim(), password);
+      await register(values.name.trim(), values.email.trim(), values.password);
       navigate("/projects", { replace: true });
     } catch (error) {
       setFormError(
-        error instanceof ApiError
-          ? error.message
-          : "Unable to create your account right now",
+        error instanceof ApiError ? error.message : "Unable to create your account right now",
       );
     } finally {
       setSubmitting(false);
     }
   }
+
+  const nameError = form.formState.errors.name?.message;
+  const emailError = form.formState.errors.email?.message;
+  const passwordError = form.formState.errors.password?.message;
+  const confirmError = form.formState.errors.confirm?.message;
 
   return (
     <AuthShell
@@ -111,42 +77,37 @@ export function RegisterPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
           <FormError message={formError} />
 
-          <Field invalid={Boolean(errors.name)}>
+          <Field invalid={Boolean(nameError)}>
             <FieldLabel>Name</FieldLabel>
             <Input
               type="text"
-              name="name"
               autoComplete="name"
               placeholder="Ada Lovelace"
               startIcon={<User />}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
+              {...form.register("name")}
             />
-            <FieldError>{errors.name}</FieldError>
+            <FieldError>{nameError}</FieldError>
           </Field>
 
-          <Field invalid={Boolean(errors.email)}>
+          <Field invalid={Boolean(emailError)}>
             <FieldLabel>Email</FieldLabel>
             <Input
               type="email"
-              name="email"
               autoComplete="email"
               placeholder="ada@example.com"
               startIcon={<AtSign />}
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              {...form.register("email")}
             />
-            <FieldError>{errors.email}</FieldError>
+            <FieldError>{emailError}</FieldError>
           </Field>
 
-          <Field invalid={Boolean(errors.password)}>
+          <Field invalid={Boolean(passwordError)}>
             <FieldLabel>Password</FieldLabel>
             <Input
               type={showPassword ? "text" : "password"}
-              name="password"
               autoComplete="new-password"
               startIcon={<KeyRound />}
               endSlot={
@@ -164,18 +125,16 @@ export function RegisterPage() {
                   )}
                 </button>
               }
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              {...form.register("password")}
             />
-            <FieldHint>At least {MIN_PASSWORD} characters.</FieldHint>
-            <FieldError>{errors.password}</FieldError>
+            <FieldHint>At least 8 characters.</FieldHint>
+            <FieldError>{passwordError}</FieldError>
           </Field>
 
-          <Field invalid={Boolean(errors.confirm)}>
+          <Field invalid={Boolean(confirmError)}>
             <FieldLabel>Confirm password</FieldLabel>
             <Input
               type={showConfirm ? "text" : "password"}
-              name="confirm"
               autoComplete="new-password"
               startIcon={<KeyRound />}
               endSlot={
@@ -193,10 +152,9 @@ export function RegisterPage() {
                   )}
                 </button>
               }
-              value={confirm}
-              onChange={(event) => setConfirm(event.target.value)}
+              {...form.register("confirm")}
             />
-            <FieldError>{errors.confirm}</FieldError>
+            <FieldError>{confirmError}</FieldError>
           </Field>
 
           <Button type="submit" size="lg" loading={submitting} className="w-full">

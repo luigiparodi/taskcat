@@ -28,13 +28,9 @@ export function TaskCardView({
   handleOpen,
   handleMove,
 }: TaskCardViewProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    isDragging,
-  } = useDraggable({ id: task.id });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: task.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -70,9 +66,7 @@ export function TaskCardView({
       </div>
 
       {task.description ? (
-        <p className="line-clamp-2 text-caption text-muted-foreground">
-          {task.description}
-        </p>
+        <p className="line-clamp-2 text-caption text-muted-foreground">{task.description}</p>
       ) : null}
 
       <CardBadgeRow>
@@ -86,9 +80,7 @@ export function TaskCardView({
       </CardBadgeRow>
 
       <CardFooter className="mt-auto flex flex-wrap items-center justify-between gap-2">
-        <span className="text-caption text-muted-foreground">
-          {assigneeName}
-        </span>
+        <span className="text-caption text-muted-foreground">{assigneeName}</span>
 
         <span className="flex items-center gap-3 text-caption text-muted-foreground">
           {dueLabel ? (
@@ -107,11 +99,7 @@ export function TaskCardView({
       </CardFooter>
 
       {canMove ? (
-        <Select
-          value={task.status}
-          onValueChange={handleMove}
-          disabled={moving || isDragging}
-        >
+        <Select value={task.status} onValueChange={handleMove} disabled={moving || isDragging}>
           <SelectTrigger aria-label={moveLabel}>
             <SelectValue placeholder={currentLabel} />
           </SelectTrigger>

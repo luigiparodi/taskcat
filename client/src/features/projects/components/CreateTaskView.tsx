@@ -61,9 +61,7 @@ export function CreateTaskView({
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-col">
           <DialogHeader>
             <DialogTitle>New task</DialogTitle>
-            <DialogDescription>
-              Add a task to the pending column.
-            </DialogDescription>
+            <DialogDescription>Add a task to the pending column.</DialogDescription>
           </DialogHeader>
 
           <DialogBody className="flex flex-col gap-4">
@@ -141,9 +139,7 @@ export function CreateTaskView({
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="new-task-hours">
-                  Estimated hours
-                </FieldLabel>
+                <FieldLabel htmlFor="new-task-hours">Estimated hours</FieldLabel>
                 <Input
                   id="new-task-hours"
                   type="number"

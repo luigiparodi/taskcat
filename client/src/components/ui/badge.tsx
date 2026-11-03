@@ -1,6 +1,6 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
   "inline-flex shrink-0 items-center gap-1.5 rounded-button border border-transparent font-medium whitespace-nowrap transition-colors duration-150 ease-standard [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -24,13 +24,13 @@ const badgeVariants = cva(
       tone: "neutral",
       size: "default",
     },
-  }
-)
+  },
+);
 
 type BadgeProps = React.ComponentProps<"span"> &
   VariantProps<typeof badgeVariants> & {
-    dot?: boolean
-  }
+    dot?: boolean;
+  };
 
 function Badge({ className, tone, size, dot = false, children, ...props }: BadgeProps) {
   return (
@@ -51,39 +51,39 @@ function Badge({ className, tone, size, dot = false, children, ...props }: Badge
       ) : null}
       {children}
     </span>
-  )
+  );
 }
 
-type TaskStatus = "pending" | "working" | "finished"
-type TaskPriority = "low" | "medium" | "high" | "urgent"
+type TaskStatus = "pending" | "working" | "finished";
+type TaskPriority = "low" | "medium" | "high" | "urgent";
 
 const STATUS_TONE: Record<TaskStatus, NonNullable<BadgeProps["tone"]>> = {
   pending: "neutral",
   working: "info",
   finished: "success",
-}
+};
 
 const PRIORITY_TONE: Record<TaskPriority, NonNullable<BadgeProps["tone"]>> = {
   low: "neutral",
   medium: "info",
   high: "warning",
   urgent: "danger",
-}
+};
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   pending: "Pending",
   working: "In progress",
   finished: "Finished",
-}
+};
 
 const PRIORITY_LABEL: Record<TaskPriority, string> = {
   low: "Low",
   medium: "Medium",
   high: "High",
   urgent: "Urgent",
-}
+};
 
-type ToneProps = Omit<BadgeProps, "tone" | "children">
+type ToneProps = Omit<BadgeProps, "tone" | "children">;
 
 function StatusBadge({
   status,
@@ -94,7 +94,7 @@ function StatusBadge({
     <Badge tone={STATUS_TONE[status]} {...props}>
       {label ?? STATUS_LABEL[status]}
     </Badge>
-  )
+  );
 }
 
 function PriorityBadge({
@@ -106,7 +106,7 @@ function PriorityBadge({
     <Badge tone={PRIORITY_TONE[priority]} {...props}>
       {label ?? PRIORITY_LABEL[priority]}
     </Badge>
-  )
+  );
 }
 
 export {
@@ -117,4 +117,4 @@ export {
   type BadgeProps,
   type TaskStatus,
   type TaskPriority,
-}
+};

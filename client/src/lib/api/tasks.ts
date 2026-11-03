@@ -30,9 +30,7 @@ interface TaskWriteInput {
 
 export const tasksApi = {
   list(projectId: string, filters: TaskListFilters = {}) {
-    return api.get<TaskBoard>(
-      `/projects/${projectId}/tasks${buildQuery({ ...filters })}`
-    );
+    return api.get<TaskBoard>(`/projects/${projectId}/tasks${buildQuery({ ...filters })}`);
   },
   get(projectId: string, taskId: string) {
     return api.get<Task>(`/projects/${projectId}/tasks/${taskId}`);
@@ -54,7 +52,7 @@ export const tasksApi = {
   },
   history(projectId: string, taskId: string, limit?: number) {
     return api.get<TaskHistoryEntry[]>(
-      `/projects/${projectId}/tasks/${taskId}/history${buildQuery({ limit })}`
+      `/projects/${projectId}/tasks/${taskId}/history${buildQuery({ limit })}`,
     );
   },
   comments(projectId: string, taskId: string) {
@@ -65,43 +63,43 @@ export const tasksApi = {
   },
   removeComment(projectId: string, taskId: string, commentId: string) {
     return api.delete<{ success?: boolean }>(
-      `/projects/${projectId}/tasks/${taskId}/comments/${commentId}`
+      `/projects/${projectId}/tasks/${taskId}/comments/${commentId}`,
     );
   },
   links(projectId: string, taskId: string) {
     return api.get<TaskLink[]>(`/projects/${projectId}/tasks/${taskId}/links`);
   },
-  addLink(projectId: string, taskId: string, input: { url: string; title: string; description?: string }) {
+  addLink(
+    projectId: string,
+    taskId: string,
+    input: { url: string; title: string; description?: string },
+  ) {
     return api.post<TaskLink>(`/projects/${projectId}/tasks/${taskId}/links`, input);
   },
   removeLink(projectId: string, taskId: string, linkId: string) {
     return api.delete<{ success?: boolean }>(
-      `/projects/${projectId}/tasks/${taskId}/links/${linkId}`
+      `/projects/${projectId}/tasks/${taskId}/links/${linkId}`,
     );
   },
   importMarkdown(projectId: string, markdown: string) {
-    return api.post<ImportPreviewResult>(
-      `/projects/${projectId}/tasks/import/markdown`,
-      { markdown }
-    );
+    return api.post<ImportPreviewResult>(`/projects/${projectId}/tasks/import/markdown`, {
+      markdown,
+    });
   },
   importPdf(projectId: string, file: File) {
-    return api.post<ImportPreviewResult>(
-      `/projects/${projectId}/tasks/import/pdf`,
-      fileForm(file)
-    );
+    return api.post<ImportPreviewResult>(`/projects/${projectId}/tasks/import/pdf`, fileForm(file));
   },
   importDocx(projectId: string, file: File) {
     return api.post<ImportPreviewResult>(
       `/projects/${projectId}/tasks/import/docx`,
-      fileForm(file)
+      fileForm(file),
     );
   },
   importCreate(projectId: string, sessionId: string, tasks: ImportPreviewTask[]) {
-    return api.post<ImportCreateResult>(
-      `/projects/${projectId}/tasks/import/create`,
-      { sessionId, tasks }
-    );
+    return api.post<ImportCreateResult>(`/projects/${projectId}/tasks/import/create`, {
+      sessionId,
+      tasks,
+    });
   },
 };
 

@@ -45,16 +45,8 @@ export function useAdminProjects() {
   }
 
   const setProjectStatus = useMutation({
-    mutationFn: ({
-      id,
-      next,
-    }: {
-      id: string;
-      next: "activate" | "deactivate";
-    }) =>
-      next === "activate"
-        ? projectsApi.activate(id)
-        : projectsApi.deactivate(id),
+    mutationFn: ({ id, next }: { id: string; next: "activate" | "deactivate" }) =>
+      next === "activate" ? projectsApi.activate(id) : projectsApi.deactivate(id),
     onSuccess: invalidate,
   });
 

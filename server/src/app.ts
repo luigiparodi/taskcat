@@ -55,12 +55,12 @@ export function createApp(mounts: Mount[] = DEFAULT_MOUNTS, env: NodeJS.ProcessE
   });
   app.use(limiter);
 
-  app.use(express.json({ limit: '1mb' }));
+  app.use(express.json({ limit: "1mb" }));
 
   // Lightweight request logging (no extra dependency).
   app.use((req, res, next) => {
     const start = Date.now();
-    res.on('finish', () => {
+    res.on("finish", () => {
       logger.info(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - start}ms`);
     });
     next();

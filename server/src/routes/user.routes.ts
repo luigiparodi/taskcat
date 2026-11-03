@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   deleteUserHandler,
   getUserHandler,
@@ -6,9 +6,9 @@ import {
   updatePreferencesHandler,
   updateUserHandler,
   updateUserRoleHandler,
-} from '../controllers/UserController';
-import { getUserTaskHistoryHandler } from '../controllers/TaskController';
-import { requireAuth, requireRole } from '../middleware/auth';
+} from "../controllers/UserController";
+import { getUserTaskHistoryHandler } from "../controllers/TaskController";
+import { requireAuth, requireRole } from "../middleware/auth";
 
 const router = Router();
 
@@ -57,7 +57,7 @@ const router = Router();
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/', requireAuth, requireRole('admin'), listUsersHandler);
+router.get("/", requireAuth, requireRole("admin"), listUsersHandler);
 
 /**
  * @openapi
@@ -123,7 +123,7 @@ router.get('/', requireAuth, requireRole('admin'), listUsersHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/:id/tasks/history', requireAuth, getUserTaskHistoryHandler);
+router.get("/:id/tasks/history", requireAuth, getUserTaskHistoryHandler);
 
 /**
  * @openapi
@@ -154,7 +154,7 @@ router.get('/:id/tasks/history', requireAuth, getUserTaskHistoryHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  *   */
-router.get('/:id', requireAuth, getUserHandler);
+router.get("/:id", requireAuth, getUserHandler);
 
 /**
  * @openapi
@@ -197,7 +197,7 @@ router.get('/:id', requireAuth, getUserHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.put('/:id', requireAuth, updateUserHandler);
+router.put("/:id", requireAuth, updateUserHandler);
 
 /**
  * @openapi
@@ -240,7 +240,7 @@ router.put('/:id', requireAuth, updateUserHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.put('/:id/preferences', requireAuth, updatePreferencesHandler);
+router.put("/:id/preferences", requireAuth, updatePreferencesHandler);
 
 /**
  * @openapi
@@ -293,7 +293,7 @@ router.put('/:id/preferences', requireAuth, updatePreferencesHandler);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.patch('/:id/role', requireAuth, requireRole('admin'), updateUserRoleHandler);
+router.patch("/:id/role", requireAuth, requireRole("admin"), updateUserRoleHandler);
 
 /**
  * @openapi
@@ -327,8 +327,6 @@ router.patch('/:id/role', requireAuth, requireRole('admin'), updateUserRoleHandl
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.delete('/:id', requireAuth, requireRole('admin'), deleteUserHandler);
+router.delete("/:id", requireAuth, requireRole("admin"), deleteUserHandler);
 
 export default router;
-
-

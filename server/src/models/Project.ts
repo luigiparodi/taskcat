@@ -1,7 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { getDb } from '../config/database';
+import { ObjectId } from "mongodb";
+import { getDb } from "../config/database";
 
-export type ProjectStatus = 'active' | 'inactive';
+export type ProjectStatus = "active" | "inactive";
 
 export interface Project {
   _id?: ObjectId;
@@ -21,12 +21,12 @@ export interface ProjectMember {
   _id?: ObjectId;
   projectId: ObjectId;
   userId: ObjectId;
-  role: 'admin' | 'member';
+  role: "admin" | "member";
   joinedAt: Date;
 }
 
-const PROJECTS_COLLECTION = 'projects';
-const PROJECT_MEMBERS_COLLECTION = 'project_members';
+const PROJECTS_COLLECTION = "projects";
+const PROJECT_MEMBERS_COLLECTION = "project_members";
 
 export function getProjectCollection() {
   return getDb().collection<Project>(PROJECTS_COLLECTION);
@@ -35,5 +35,3 @@ export function getProjectCollection() {
 export function getProjectMemberCollection() {
   return getDb().collection<ProjectMember>(PROJECT_MEMBERS_COLLECTION);
 }
-
-

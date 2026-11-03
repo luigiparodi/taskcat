@@ -132,7 +132,9 @@ export function useProjectMembers({
     isRemovalOpen: pendingRemoval !== null,
     pendingRemovalName: pendingRemoval?.name,
     isRemoving: removeMember.isPending,
-    removeError: removeMember.isError ? message(removeMember.error, "Unable to remove that member") : null,
+    removeError: removeMember.isError
+      ? message(removeMember.error, "Unable to remove that member")
+      : null,
   };
 }
 

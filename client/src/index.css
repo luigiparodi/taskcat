@@ -10,8 +10,8 @@
   /* Tipografía: Geist Variable (self-hosted). SF Pro no se puede empaquetar en web;
      la pila de sistema queda solo como fallback en @theme inline */
   --font-apple-system:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 
   /* Paleta de Colores de Apple (acento) */
   --color-apple-bg: #f5f5f7; /* Gris muy claro usado en el fondo de las tiendas y macOS */

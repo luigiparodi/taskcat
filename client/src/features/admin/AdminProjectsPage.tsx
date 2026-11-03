@@ -40,18 +40,13 @@ export function AdminProjectsPage() {
         onOpenChange={h.handleEditOpenChange}
       />
 
-      <AlertDialog
-        open={h.pendingDelete !== null}
-        onOpenChange={h.handleDeleteOpenChange}
-      >
+      <AlertDialog open={h.pendingDelete !== null} onOpenChange={h.handleDeleteOpenChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Delete {h.pendingDelete?.title}?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Delete {h.pendingDelete?.title}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the project along with its tasks,
-              comments, links and history. It cannot be undone.
+              This permanently removes the project along with its tasks, comments, links and
+              history. It cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {h.deleteError ? (

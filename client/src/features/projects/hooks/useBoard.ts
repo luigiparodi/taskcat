@@ -44,9 +44,7 @@ export function useBoard() {
   const importNoticeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleImported = React.useCallback((count: number) => {
-    setImportNotice(
-      `Imported ${count} ${count === 1 ? "task" : "tasks"} from the document.`
-    );
+    setImportNotice(`Imported ${count} ${count === 1 ? "task" : "tasks"} from the document.`);
     if (importNoticeTimer.current) {
       clearTimeout(importNoticeTimer.current);
     }

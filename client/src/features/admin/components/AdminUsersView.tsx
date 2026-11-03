@@ -37,6 +37,7 @@ export function AdminUsersView({
   roleChangeError,
 }: AdminUsersViewProps) {
   const actionError = removeError ?? roleChangeError;
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -120,11 +121,7 @@ export function AdminUsersView({
                   <Button size="sm" variant="outline" onClick={() => setEditing(user)}>
                     Edit
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setPendingRoleChange(user)}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => setPendingRoleChange(user)}>
                     {user.role === "admin" ? "Make worker" : "Make admin"}
                   </Button>
                   <Button
@@ -153,7 +150,12 @@ export function AdminUsersView({
             <Button size="sm" variant="outline" disabled={page <= 1} onClick={handlePreviousPage}>
               Previous
             </Button>
-            <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={handleNextPage}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={page >= totalPages}
+              onClick={handleNextPage}
+            >
               Next
             </Button>
           </div>

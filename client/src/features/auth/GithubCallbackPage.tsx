@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { authApi } from '@/lib/api/auth';
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { authApi } from "@/lib/api/auth";
 import { useAuth } from "@/features/auth/auth-context";
 
 export function GithubCallbackPage() {
@@ -10,29 +10,29 @@ export function GithubCallbackPage() {
 
   useEffect(() => {
     async function handleCallback() {
-      const code = searchParams.get('code');
-      const state = searchParams.get('state');
-      const error = searchParams.get('error');
-      const errorDescription = searchParams.get('error_description');
+      const code = searchParams.get("code");
+      const state = searchParams.get("state");
+      const error = searchParams.get("error");
+      const errorDescription = searchParams.get("error_description");
 
       if (error) {
         const msg = errorDescription || error;
-        navigate('/login?error=' + encodeURIComponent(msg));
+        navigate("/login?error=" + encodeURIComponent(msg));
         return;
       }
 
       if (!code) {
-        navigate('/login?error=' + encodeURIComponent('Invalid callback: missing code'));
+        navigate("/login?error=" + encodeURIComponent("Invalid callback: missing code"));
         return;
       }
 
       try {
         const result = await authApi.githubCallback(code, state ?? undefined);
         await loginWithTokens(result.token, result.refreshToken ?? "", result.user);
-        navigate('/projects', { replace: true });
+        navigate("/projects", { replace: true });
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'GitHub sign in failed';
-        navigate('/login?error=' + encodeURIComponent(message));
+        const message = err instanceof Error ? err.message : "GitHub sign in failed";
+        navigate("/login?error=" + encodeURIComponent(message));
       }
     }
     handleCallback();

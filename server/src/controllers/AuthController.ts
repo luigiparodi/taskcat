@@ -1,24 +1,33 @@
-import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
-import { AuthError, changePassword, getMe, githubAuth, login, logout, refresh, register } from '../services/AuthService';
-import { logger } from '../config/logger';
-import crypto from 'crypto';
+import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
+import {
+  AuthError,
+  changePassword,
+  getMe,
+  githubAuth,
+  login,
+  logout,
+  refresh,
+  register,
+} from "../services/AuthService";
+import { logger } from "../config/logger";
+import crypto from "crypto";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function registerHandler(req: Request, res: Response) {
   const { email, password, name } = req.body ?? {};
 
-  if (typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
-    res.status(400).json({ error: 'A valid email is required' });
+  if (typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
+    res.status(400).json({ error: "A valid email is required" });
     return;
   }
-  if (typeof password !== 'string' || password.length < 8) {
-    res.status(400).json({ error: 'Password must be at least 8 characters' });
+  if (typeof password !== "string" || password.length < 8) {
+    res.status(400).json({ error: "Password must be at least 8 characters" });
     return;
   }
-  if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 50) {
-    res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
+  if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 50) {
+    res.status(400).json({ error: "Name must be between 2 and 50 characters" });
     return;
   }
 
@@ -30,8 +39,8 @@ export async function registerHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('register error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("register error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -40,27 +49,27 @@ export async function githubLoginHandler(req: Request, res: Response) {
   const frontendUrl = process.env.FRONTEND_URL;
 
   if (!clientId || !frontendUrl) {
-    logger.error('GitHub OAuth not configured');
-    res.status(500).json({ error: 'GitHub OAuth is not configured' });
+    logger.error("GitHub OAuth not configured");
+    res.status(500).json({ error: "GitHub OAuth is not configured" });
     return;
   }
 
   const state = crypto.randomUUID();
   const redirectUri = `${frontendUrl}/auth/github/callback`;
 
-  res.cookie('github_oauth_state', state, {
+  res.cookie("github_oauth_state", state, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 10 * 60 * 1000,
   });
 
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
-    scope: 'read:user user:email',
+    scope: "read:user user:email",
     state,
-    allow_signup: 'true',
+    allow_signup: "true",
   });
 
   res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
@@ -69,12 +78,12 @@ export async function githubLoginHandler(req: Request, res: Response) {
 export async function loginHandler(req: Request, res: Response) {
   const { email, password } = req.body ?? {};
 
-  if (typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
-    res.status(400).json({ error: 'A valid email is required' });
+  if (typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
+    res.status(400).json({ error: "A valid email is required" });
     return;
   }
-  if (typeof password !== 'string' || password.length === 0) {
-    res.status(400).json({ error: 'Password is required' });
+  if (typeof password !== "string" || password.length === 0) {
+    res.status(400).json({ error: "Password is required" });
     return;
   }
 
@@ -86,32 +95,33 @@ export async function loginHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('login error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("login error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export async function logoutHandler(req: Request, res: Response) {
   try {
-    const refreshToken = typeof req.body?.refreshToken === 'string' ? req.body.refreshToken : undefined;
+    const refreshToken =
+      typeof req.body?.refreshToken === "string" ? req.body.refreshToken : undefined;
     const result = await logout(new ObjectId(req.user!.userId), refreshToken);
     res.status(200).json(result);
   } catch (err) {
-    logger.error('logout error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("logout error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 function readCookie(req: Request, name: string): string | undefined {
   const header = req.headers.cookie;
   if (!header) return undefined;
-  for (const part of header.split(';')) {
-    const [rawKey, ...rest] = part.trim().split('=');
+  for (const part of header.split(";")) {
+    const [rawKey, ...rest] = part.trim().split("=");
     if (rawKey === name) {
       try {
-        return decodeURIComponent(rest.join('='));
+        return decodeURIComponent(rest.join("="));
       } catch {
-        return rest.join('=');
+        return rest.join("=");
       }
     }
   }
@@ -121,29 +131,29 @@ function readCookie(req: Request, name: string): string | undefined {
 export async function githubCallbackHandler(req: Request, res: Response) {
   const { code, state } = req.body ?? {};
 
-  if (typeof code !== 'string' || code.length === 0) {
-    res.status(400).json({ error: 'GitHub code is required' });
+  if (typeof code !== "string" || code.length === 0) {
+    res.status(400).json({ error: "GitHub code is required" });
     return;
   }
 
   // Verify the OAuth state to prevent CSRF. The state was issued by githubLoginHandler
   // and stored in an httpOnly cookie on this domain.
-  const expectedState = readCookie(req, 'github_oauth_state');
+  const expectedState = readCookie(req, "github_oauth_state");
   if (
-    typeof state !== 'string' ||
+    typeof state !== "string" ||
     state.length === 0 ||
     !expectedState ||
     expectedState !== state
   ) {
-    res.status(400).json({ error: 'Invalid or missing OAuth state' });
+    res.status(400).json({ error: "Invalid or missing OAuth state" });
     return;
   }
 
   // Consume the state so it cannot be replayed.
-  res.clearCookie('github_oauth_state', {
+  res.clearCookie("github_oauth_state", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
 
   try {
@@ -154,16 +164,16 @@ export async function githubCallbackHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('github callback error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("github callback error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export async function refreshHandler(req: Request, res: Response) {
   const { refreshToken } = req.body ?? {};
 
-  if (typeof refreshToken !== 'string' || refreshToken.length === 0) {
-    res.status(400).json({ error: 'Refresh token is required' });
+  if (typeof refreshToken !== "string" || refreshToken.length === 0) {
+    res.status(400).json({ error: "Refresh token is required" });
     return;
   }
 
@@ -175,8 +185,8 @@ export async function refreshHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('refresh error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("refresh error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -189,20 +199,20 @@ export async function meHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('me error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("me error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export async function changePasswordHandler(req: Request, res: Response) {
   const { currentPassword, newPassword } = req.body ?? {};
 
-  if (typeof currentPassword !== 'string' || currentPassword.length === 0) {
-    res.status(400).json({ error: 'Current password is required' });
+  if (typeof currentPassword !== "string" || currentPassword.length === 0) {
+    res.status(400).json({ error: "Current password is required" });
     return;
   }
-  if (typeof newPassword !== 'string' || newPassword.length < 8) {
-    res.status(400).json({ error: 'New password must be at least 8 characters' });
+  if (typeof newPassword !== "string" || newPassword.length < 8) {
+    res.status(400).json({ error: "New password must be at least 8 characters" });
     return;
   }
 
@@ -214,9 +224,7 @@ export async function changePasswordHandler(req: Request, res: Response) {
       res.status(err.statusCode).json({ error: err.message });
       return;
     }
-    logger.error('changePassword error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("changePassword error", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
-
-

@@ -16,8 +16,7 @@ function readStoredTokens(): StoredTokens | null {
     if (typeof parsed.token !== "string") return null;
     return {
       token: parsed.token,
-      refreshToken:
-        typeof parsed.refreshToken === "string" ? parsed.refreshToken : "",
+      refreshToken: typeof parsed.refreshToken === "string" ? parsed.refreshToken : "",
     };
   } catch {
     return null;
@@ -108,19 +107,16 @@ export function useAuthProvider(): AuthContextValue {
     setStatus("authenticated");
   }, []);
 
-  const register = React.useCallback(
-    async (name: string, email: string, password: string) => {
-      const session = await authApi.register({ name, email, password });
-      writeStoredTokens({
-        token: session.token,
-        refreshToken: session.refreshToken ?? "",
-      });
-      queryClient.clear();
-      setUser(session.user);
-      setStatus("authenticated");
-    },
-    [],
-  );
+  const register = React.useCallback(async (name: string, email: string, password: string) => {
+    const session = await authApi.register({ name, email, password });
+    writeStoredTokens({
+      token: session.token,
+      refreshToken: session.refreshToken ?? "",
+    });
+    queryClient.clear();
+    setUser(session.user);
+    setStatus("authenticated");
+  }, []);
 
   const logout = React.useCallback(async () => {
     const stored = readStoredTokens();
@@ -137,14 +133,14 @@ export function useAuthProvider(): AuthContextValue {
     navigate("/login", { replace: true });
   }, [clearSession, navigate]);
 
-const loginWithTokens = React.useCallback(
+  const loginWithTokens = React.useCallback(
     async (token: string, refreshToken: string, user: AuthContextValue["user"]) => {
       writeStoredTokens({ token, refreshToken });
       queryClient.clear();
       setUser(user);
       setStatus("authenticated");
     },
-    []
+    [],
   );
 
   return React.useMemo<AuthContextValue>(

@@ -43,11 +43,7 @@ function validate(values: {
   return errors;
 }
 
-export function useCreateProject({
-  open,
-  onOpenChange,
-  onCreated,
-}: CreateProjectDialogProps) {
+export function useCreateProject({ open, onOpenChange, onCreated }: CreateProjectDialogProps) {
   const queryClient = useQueryClient();
 
   const [title, setTitle] = React.useState("");
@@ -84,9 +80,7 @@ export function useCreateProject({
       onCreated?.(project.id);
     },
     onError: (error) => {
-      setFormError(
-        error instanceof ApiError ? error.message : "Unable to create the project",
-      );
+      setFormError(error instanceof ApiError ? error.message : "Unable to create the project");
     },
   });
 

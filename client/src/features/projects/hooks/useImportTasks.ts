@@ -2,11 +2,7 @@ import * as React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { tasksApi } from "@/lib/api/tasks";
 import { ApiError } from "@/lib/api/client";
-import type {
-  ImportPreviewTask,
-  ProjectMember,
-  TaskPriority,
-} from "@/lib/api/types";
+import type { ImportPreviewTask, ProjectMember, TaskPriority } from "@/lib/api/types";
 
 const PRIORITIES: Array<{ value: TaskPriority; label: string }> = [
   { value: "low", label: "Low" },
@@ -81,8 +77,7 @@ export function useImportTasks({
   });
 
   const createMutation = useMutation({
-    mutationFn: () =>
-      tasksApi.importCreate(projectId, sessionId as string, preview ?? []),
+    mutationFn: () => tasksApi.importCreate(projectId, sessionId as string, preview ?? []),
     onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: tasksKey });
       onImported?.(data.created);
@@ -96,9 +91,13 @@ export function useImportTasks({
     setFormError(null);
   }
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setFile(event.target.files?.[0] ?? null);
+  function handleFile(file: File | null) {
+    setFile(file);
     setFormError(null);
+  }
+
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    handleFile(event.target.files?.[0] ?? null);
   }
 
   function handleExtract() {
@@ -147,8 +146,7 @@ export function useImportTasks({
   }
 
   const isServiceBusy =
-    extractMutation.error instanceof ApiError &&
-    extractMutation.error.status === 503;
+    extractMutation.error instanceof ApiError && extractMutation.error.status === 503;
 
   const extractError = extractMutation.error
     ? extractMutation.error instanceof ApiError
@@ -175,6 +173,7 @@ export function useImportTasks({
     file,
     fileKind,
     handleFileChange,
+    handleFile,
     preview,
     sessionId,
     extractError,

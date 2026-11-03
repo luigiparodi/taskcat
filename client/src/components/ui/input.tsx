@@ -64,11 +64,7 @@ function Input({
       className="relative w-full"
     >
       {startIcon ? (
-        <span
-          data-slot="input-icon"
-          aria-hidden="true"
-          className={iconClasses({ size })}
-        >
+        <span data-slot="input-icon" aria-hidden="true" className={iconClasses({ size })}>
           {startIcon}
         </span>
       ) : null}
@@ -89,10 +85,7 @@ function Input({
       {endSlot ? (
         <span
           data-slot="input-suffix"
-          className={cn(
-            iconClasses({ slot: "end", size }),
-            "pointer-events-auto",
-          )}
+          className={cn(iconClasses({ slot: "end", size }), "pointer-events-auto")}
         >
           {endSlot}
         </span>

@@ -1,5 +1,5 @@
-import { PDFParse } from 'pdf-parse';
-import mammoth from 'mammoth';
+import { PDFParse } from "pdf-parse";
+import mammoth from "mammoth";
 
 export async function extractPdfText(buffer: Buffer): Promise<string> {
   const parser = new PDFParse({ data: new Uint8Array(buffer) });

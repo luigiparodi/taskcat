@@ -29,9 +29,7 @@ function AdminAreaSwitcher() {
       className="flex items-center gap-0.5 rounded-full border border-border-strong bg-surface-2 p-0.5"
     >
       {segments.map((segment) => {
-        const active = segment.to.startsWith("/admin")
-          ? isOnAdmin
-          : !isOnAdmin;
+        const active = segment.to.startsWith("/admin") ? isOnAdmin : !isOnAdmin;
         return (
           <NavLink
             key={segment.to}
@@ -86,9 +84,7 @@ export function AppHeader({
           {leading}
           <div className="min-w-0">
             <h1 className="truncate text-title-3 font-semibold">{title}</h1>
-            {subtitle ? (
-              <p className="text-caption text-muted-foreground">{subtitle}</p>
-            ) : null}
+            {subtitle ? <p className="text-caption text-muted-foreground">{subtitle}</p> : null}
           </div>
         </div>
 
@@ -99,9 +95,7 @@ export function AppHeader({
 
           <DropdownMenu>
             <DropdownMenuTrigger aria-label="Account menu">
-              <span className="max-w-40 truncate">
-                {user?.name ?? "Account"}
-              </span>
+              <span className="max-w-40 truncate">{user?.name ?? "Account"}</span>
               <ChevronDown aria-hidden="true" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

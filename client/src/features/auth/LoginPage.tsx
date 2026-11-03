@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AtSign, Eye, EyeOff, KeyRound } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AuthShell, FormError } from "@/features/auth/AuthShell";
@@ -8,33 +10,29 @@ import { useAuth } from "@/features/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
 import { GitHubLoginButton } from "@/features/auth/OAuthButtons";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-type Errors = { email?: string; password?: string };
+import { loginSchema, type LoginValues } from "@/features/auth/schemas";
 
 export function LoginPage() {
   const { status, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from =
-    (location.state as { from?: string } | null)?.from ?? "/projects";
+  const from = (location.state as { from?: string } | null)?.from ?? "/projects";
 
   const TEST_ADMIN_EMAIL = "admin@taskcat.com";
   const TEST_ADMIN_PASSWORD = "qwerty123";
-
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [errors, setErrors] = React.useState<Errors>({});
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
 
+  const form = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
   function fillTestAdmin() {
-    setEmail(TEST_ADMIN_EMAIL);
-    setPassword(TEST_ADMIN_PASSWORD);
-    setErrors({});
+    form.setValue("email", TEST_ADMIN_EMAIL, { shouldValidate: true });
+    form.setValue("password", TEST_ADMIN_PASSWORD, { shouldValidate: true });
     setFormError(null);
   }
 
@@ -42,39 +40,21 @@ export function LoginPage() {
     return <Navigate to={from} replace />;
   }
 
-  function validate(): Errors {
-    const next: Errors = {};
-    if (!EMAIL_REGEX.test(email.trim())) {
-      next.email = "Enter a valid email address";
-    }
-    if (password.length === 0) {
-      next.password = "Enter your password";
-    }
-    return next;
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function onSubmit(values: LoginValues) {
     setFormError(null);
-
-    const nextErrors = validate();
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
-
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
+      await login(values.email.trim(), values.password);
       navigate(from, { replace: true });
     } catch (error) {
-      setFormError(
-        error instanceof ApiError
-          ? error.message
-          : "Unable to sign in right now",
-      );
+      setFormError(error instanceof ApiError ? error.message : "Unable to sign in right now");
     } finally {
       setSubmitting(false);
     }
   }
+
+  const emailError = form.formState.errors.email?.message;
+  const passwordError = form.formState.errors.password?.message;
 
   return (
     <AuthShell
@@ -83,10 +63,7 @@ export function LoginPage() {
       footer={
         <>
           New here?{" "}
-          <Link
-            to="/register"
-            className="text-link font-medium hover:underline"
-          >
+          <Link to="/register" className="text-link font-medium hover:underline">
             Create an account
           </Link>
         </>
@@ -106,28 +83,25 @@ export function LoginPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
           <FormError message={formError} />
 
-          <Field invalid={Boolean(errors.email)}>
+          <Field invalid={Boolean(emailError)}>
             <FieldLabel>Email</FieldLabel>
             <Input
               type="email"
-              name="email"
               autoComplete="email"
               placeholder="ada@example.com"
               startIcon={<AtSign />}
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              {...form.register("email")}
             />
-            <FieldError>{errors.email}</FieldError>
+            <FieldError>{emailError}</FieldError>
           </Field>
 
-          <Field invalid={Boolean(errors.password)}>
+          <Field invalid={Boolean(passwordError)}>
             <FieldLabel>Password</FieldLabel>
             <Input
               type={showPassword ? "text" : "password"}
-              name="password"
               autoComplete="current-password"
               startIcon={<KeyRound />}
               endSlot={
@@ -145,10 +119,9 @@ export function LoginPage() {
                   )}
                 </button>
               }
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              {...form.register("password")}
             />
-            <FieldError>{errors.password}</FieldError>
+            <FieldError>{passwordError}</FieldError>
           </Field>
 
           <Button

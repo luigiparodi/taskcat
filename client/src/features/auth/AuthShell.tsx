@@ -26,20 +26,14 @@ export function AuthShell({
           <h1 className="text-pretty text-title-2 font-semibold tracking-tight text-white">
             {title}
           </h1>
-          <p className="mx-auto mt-2 max-w-xs text-body text-white/70">
-            {subtitle}
-          </p>
+          <p className="mx-auto mt-2 max-w-xs text-body text-white/70">{subtitle}</p>
         </div>
 
         <Card className="border-white/8 bg-white/6 shadow-2xl shadow-black/50 backdrop-blur-2xl backdrop-saturate-150">
           <CardContent className="flex flex-col gap-5">{children}</CardContent>
         </Card>
 
-        {footer ? (
-          <div className="mt-6 text-center text-body text-white/70">
-            {footer}
-          </div>
-        ) : null}
+        {footer ? <div className="mt-6 text-center text-body text-white/70">{footer}</div> : null}
       </div>
     </main>
   );

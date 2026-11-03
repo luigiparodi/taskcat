@@ -1,7 +1,7 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
-import { fieldControlClasses, useField } from "@/components/ui/field"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+import { fieldControlClasses, useField } from "@/components/ui/field";
 
 const textareaVariants = cva(fieldControlClasses, {
   variants: {
@@ -20,7 +20,7 @@ const textareaVariants = cva(fieldControlClasses, {
     size: "default",
     resize: "vertical",
   },
-})
+});
 
 function Textarea({
   className,
@@ -31,7 +31,7 @@ function Textarea({
   "aria-invalid": invalidProp,
   ...props
 }: React.ComponentProps<"textarea"> & VariantProps<typeof textareaVariants>) {
-  const field = useField()
+  const field = useField();
 
   return (
     <textarea
@@ -43,7 +43,7 @@ function Textarea({
       className={cn(textareaVariants({ size, resize }), "min-h-20", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Textarea, textareaVariants }
+export { Textarea, textareaVariants };

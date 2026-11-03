@@ -1,8 +1,8 @@
-import { ObjectId } from 'mongodb';
-import { getDb } from '../config/database';
+import { ObjectId } from "mongodb";
+import { getDb } from "../config/database";
 
-export type TaskStatus = 'pending' | 'working' | 'finished';
-export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskStatus = "pending" | "working" | "finished";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
 export interface Task {
   _id?: ObjectId;
@@ -50,10 +50,10 @@ export interface TaskHistoryEntry {
   createdAt: Date;
 }
 
-const TASKS_COLLECTION = 'tasks';
-const TASK_COMMENTS_COLLECTION = 'task_comments';
-const TASK_LINKS_COLLECTION = 'task_links';
-const TASK_HISTORY_COLLECTION = 'task_history';
+const TASKS_COLLECTION = "tasks";
+const TASK_COMMENTS_COLLECTION = "task_comments";
+const TASK_LINKS_COLLECTION = "task_links";
+const TASK_HISTORY_COLLECTION = "task_history";
 
 export function getTaskCollection() {
   return getDb().collection<Task>(TASKS_COLLECTION);
@@ -70,5 +70,3 @@ export function getTaskLinkCollection() {
 export function getTaskHistoryCollection() {
   return getDb().collection<TaskHistoryEntry>(TASK_HISTORY_COLLECTION);
 }
-
-

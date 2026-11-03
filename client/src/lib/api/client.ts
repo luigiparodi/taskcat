@@ -104,7 +104,7 @@ async function send<T>(
   path: string,
   options: RequestOptions,
   overrideToken: string | null,
-  isRetry: boolean
+  isRetry: boolean,
 ): Promise<T> {
   const { method = "GET", body, auth = true, signal, headers = {} } = options;
 
@@ -124,12 +124,7 @@ async function send<T>(
       method,
       headers: requestHeaders,
       signal,
-      body:
-        body === undefined
-          ? undefined
-          : isFormData
-            ? (body as FormData)
-            : JSON.stringify(body),
+      body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
     });
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {

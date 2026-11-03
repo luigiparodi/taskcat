@@ -1,8 +1,8 @@
-import { getAuditLogCollection } from '../models/AuditLog';
-import { getProjectCollection, getProjectMemberCollection } from '../models/Project';
-import { getTaskCollection } from '../models/Task';
-import { getUserCollection } from '../models/User';
-import { getProjectAccess } from './ProjectService';
+import { getAuditLogCollection } from "../models/AuditLog";
+import { getProjectCollection, getProjectMemberCollection } from "../models/Project";
+import { getTaskCollection } from "../models/Task";
+import { getUserCollection } from "../models/User";
+import { getProjectAccess } from "./ProjectService";
 
 export interface AdminStatistics {
   users: {
@@ -38,7 +38,7 @@ export async function getAdminStatistics(): Promise<AdminStatistics> {
   const tasks = getTaskCollection();
   const auditLogs = getAuditLogCollection();
 
-  const notDeleted = { status: { $ne: 'deleted' as const } };
+  const notDeleted = { status: { $ne: "deleted" as const } };
 
   const [
     totalUsers,
@@ -57,17 +57,17 @@ export async function getAdminStatistics(): Promise<AdminStatistics> {
     totalAuditLogs,
   ] = await Promise.all([
     users.countDocuments(notDeleted),
-    users.countDocuments({ status: 'active' }),
-    users.countDocuments({ ...notDeleted, role: 'admin' }),
-    users.countDocuments({ ...notDeleted, role: 'worker' }),
+    users.countDocuments({ status: "active" }),
+    users.countDocuments({ ...notDeleted, role: "admin" }),
+    users.countDocuments({ ...notDeleted, role: "worker" }),
     projects.countDocuments({}),
-    projects.countDocuments({ status: 'active' }),
-    projects.countDocuments({ status: 'inactive' }),
+    projects.countDocuments({ status: "active" }),
+    projects.countDocuments({ status: "inactive" }),
     members.countDocuments({}),
     tasks.countDocuments({}),
-    tasks.countDocuments({ status: 'pending' }),
-    tasks.countDocuments({ status: 'working' }),
-    tasks.countDocuments({ status: 'finished' }),
+    tasks.countDocuments({ status: "pending" }),
+    tasks.countDocuments({ status: "working" }),
+    tasks.countDocuments({ status: "finished" }),
     tasks.countDocuments({ assignedTo: null }),
     auditLogs.countDocuments({}),
   ]);
@@ -115,7 +115,7 @@ export interface ProjectStatistics {
  */
 export async function getProjectStatistics(
   projectId: string,
-  requester: { userId: string; role: string }
+  requester: { userId: string; role: string },
 ): Promise<ProjectStatistics> {
   const access = await getProjectAccess(projectId, requester);
   const projectObjectId = access.project._id;
@@ -123,21 +123,28 @@ export async function getProjectStatistics(
   const tasks = getTaskCollection();
   const members = getProjectMemberCollection();
 
-  const [totalTasks, pendingTasks, workingTasks, finishedTasks, unassignedTasks, totalMembers, adminMembers] =
-    await Promise.all([
-      tasks.countDocuments({ projectId: projectObjectId }),
-      tasks.countDocuments({ projectId: projectObjectId, status: 'pending' }),
-      tasks.countDocuments({ projectId: projectObjectId, status: 'working' }),
-      tasks.countDocuments({ projectId: projectObjectId, status: 'finished' }),
-      tasks.countDocuments({ projectId: projectObjectId, assignedTo: null }),
-      members.countDocuments({ projectId: projectObjectId }),
-      members.countDocuments({ projectId: projectObjectId, role: 'admin' }),
-    ]);
+  const [
+    totalTasks,
+    pendingTasks,
+    workingTasks,
+    finishedTasks,
+    unassignedTasks,
+    totalMembers,
+    adminMembers,
+  ] = await Promise.all([
+    tasks.countDocuments({ projectId: projectObjectId }),
+    tasks.countDocuments({ projectId: projectObjectId, status: "pending" }),
+    tasks.countDocuments({ projectId: projectObjectId, status: "working" }),
+    tasks.countDocuments({ projectId: projectObjectId, status: "finished" }),
+    tasks.countDocuments({ projectId: projectObjectId, assignedTo: null }),
+    members.countDocuments({ projectId: projectObjectId }),
+    members.countDocuments({ projectId: projectObjectId, role: "admin" }),
+  ]);
 
   return {
     projectId: projectObjectId.toHexString(),
-    title: access.project.title ?? '',
-    status: access.project.status ?? 'active',
+    title: access.project.title ?? "",
+    status: access.project.status ?? "active",
     tasks: {
       total: totalTasks,
       pending: pendingTasks,
@@ -194,8 +201,8 @@ export interface AdminAnalytics {
 const ACTIVITY_DAYS = 14;
 
 function toDateKey(date: Date): string {
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
@@ -228,19 +235,34 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   const projects = getProjectCollection();
   const tasks = getTaskCollection();
 
-  const notFinished = { status: { $ne: 'finished' as const } };
+  const notFinished = { status: { $ne: "finished" as const } };
 
-  const [totalProjects, activeProjects, totalTasks, overdueTasks, activeMembers, members, taskDocs, projectDocs] =
-    await Promise.all([
-      projects.countDocuments({}),
-      projects.countDocuments({ status: 'active' }),
-      tasks.countDocuments({}),
-      tasks.countDocuments({ ...notFinished, endDate: { $lt: now } }),
-      users.countDocuments({ status: 'active' }),
-      users.find({ role: 'worker', status: 'active' }, { projection: { name: 1, email: 1 } }).toArray(),
-      tasks.find({}, { projection: { projectId: 1, status: 1, assignedTo: 1, estimatedHours: 1, createdAt: 1 } }).toArray(),
-      projects.find({}, { projection: { title: 1, status: 1 } }).toArray(),
-    ]);
+  const [
+    totalProjects,
+    activeProjects,
+    totalTasks,
+    overdueTasks,
+    activeMembers,
+    members,
+    taskDocs,
+    projectDocs,
+  ] = await Promise.all([
+    projects.countDocuments({}),
+    projects.countDocuments({ status: "active" }),
+    tasks.countDocuments({}),
+    tasks.countDocuments({ ...notFinished, endDate: { $lt: now } }),
+    users.countDocuments({ status: "active" }),
+    users
+      .find({ role: "worker", status: "active" }, { projection: { name: 1, email: 1 } })
+      .toArray(),
+    tasks
+      .find(
+        {},
+        { projection: { projectId: 1, status: 1, assignedTo: 1, estimatedHours: 1, createdAt: 1 } },
+      )
+      .toArray(),
+    projects.find({}, { projection: { title: 1, status: 1 } }).toArray(),
+  ]);
 
   const statusCounts = { pending: 0, working: 0, finished: 0 };
   let openTasks = 0;
@@ -251,8 +273,8 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     const userId = member._id.toHexString();
     workloadById.set(userId, {
       userId,
-      name: member.name ?? '',
-      email: member.email ?? '',
+      name: member.name ?? "",
+      email: member.email ?? "",
       assignedTasks: 0,
       openTasks: 0,
       completedTasks: 0,
@@ -260,23 +282,31 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     });
   }
 
-  const projectTotals = new Map<string, { totalTasks: number; pending: number; working: number; finished: number }>();
+  const projectTotals = new Map<
+    string,
+    { totalTasks: number; pending: number; working: number; finished: number }
+  >();
   for (const project of projectDocs) {
     if (!project._id) continue;
-    projectTotals.set(project._id.toHexString(), { totalTasks: 0, pending: 0, working: 0, finished: 0 });
+    projectTotals.set(project._id.toHexString(), {
+      totalTasks: 0,
+      pending: 0,
+      working: 0,
+      finished: 0,
+    });
   }
 
   const activity = buildActivityWindow(now);
 
   for (const task of taskDocs) {
     statusCounts[task.status] += 1;
-    if (task.status !== 'finished') openTasks += 1;
+    if (task.status !== "finished") openTasks += 1;
 
     if (task.assignedTo) {
       const workload = workloadById.get(task.assignedTo.toHexString());
       if (workload) {
         workload.assignedTasks += 1;
-        if (task.status === 'finished') workload.completedTasks += 1;
+        if (task.status === "finished") workload.completedTasks += 1;
         else workload.openTasks += 1;
         workload.estimatedHours += task.estimatedHours ?? 0;
       }
@@ -285,8 +315,8 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     const projectEntry = projectTotals.get(task.projectId.toHexString());
     if (projectEntry) {
       projectEntry.totalTasks += 1;
-      if (task.status === 'pending') projectEntry.pending += 1;
-      else if (task.status === 'working') projectEntry.working += 1;
+      if (task.status === "pending") projectEntry.pending += 1;
+      else if (task.status === "working") projectEntry.working += 1;
       else projectEntry.finished += 1;
     }
 
@@ -301,7 +331,7 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
     overview: { totalProjects, activeProjects, totalTasks, openTasks, overdueTasks, activeMembers },
     taskStatus: statusCounts,
     workload: Array.from(workloadById.values()).sort(
-      (a, b) => b.openTasks - a.openTasks || a.name.localeCompare(b.name)
+      (a, b) => b.openTasks - a.openTasks || a.name.localeCompare(b.name),
     ),
     projects: projectDocs
       .filter((project) => project._id)
@@ -315,13 +345,12 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
           pending: totals?.pending ?? 0,
           working: totals?.working ?? 0,
           finished: totals?.finished ?? 0,
-          progress: totals?.totalTasks ? Math.round((totals.finished / totals.totalTasks) * 100) : 0,
+          progress: totals?.totalTasks
+            ? Math.round((totals.finished / totals.totalTasks) * 100)
+            : 0,
         };
       })
       .sort((a, b) => a.title.localeCompare(b.title)),
     activity: activity.days,
   };
 }
-
-
-

@@ -1,12 +1,12 @@
-import { ObjectId } from 'mongodb';
-import { AuditEntityType, AuditLog, getAuditLogCollection } from '../models/AuditLog';
-import { AuthError } from './AuthService';
-import { logger } from '../config/logger';
+import { ObjectId } from "mongodb";
+import { AuditEntityType, AuditLog, getAuditLogCollection } from "../models/AuditLog";
+import { AuthError } from "./AuthService";
+import { logger } from "../config/logger";
 
 const PAGE_SIZE_DEFAULT = 20;
 const PAGE_SIZE_MAX = 100;
 
-const ENTITY_TYPES: AuditEntityType[] = ['user', 'project', 'task'];
+const ENTITY_TYPES: AuditEntityType[] = ["user", "project", "task"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export interface AuditInput {
@@ -39,15 +39,15 @@ export function logAudit(input: AuditInput): void {
         summary: input.summary,
         createdAt: new Date(),
       })
-      .catch((err) => logger.error('audit log write failed', err));
+      .catch((err) => logger.error("audit log write failed", err));
   } catch (err) {
-    logger.error('audit log write failed', err);
+    logger.error("audit log write failed", err);
   }
 }
 
 export function toPublicAuditLog(log: AuditLog) {
   return {
-    id: log._id instanceof ObjectId ? log._id.toHexString() : String(log._id ?? ''),
+    id: log._id instanceof ObjectId ? log._id.toHexString() : String(log._id ?? ""),
     entityType: log.entityType,
     entityId: log.entityId,
     action: log.action,
@@ -68,10 +68,10 @@ export interface AuditLogFilters {
 
 export async function listAuditLogs(filters: AuditLogFilters = {}) {
   if (filters.page !== undefined && (!Number.isInteger(filters.page) || filters.page < 1)) {
-    throw new AuthError('Page must be a positive integer', 400);
+    throw new AuthError("Page must be a positive integer", 400);
   }
   if (filters.limit !== undefined && (!Number.isInteger(filters.limit) || filters.limit < 1)) {
-    throw new AuthError('Limit must be a positive integer', 400);
+    throw new AuthError("Limit must be a positive integer", 400);
   }
 
   const page = filters.page ?? 1;
@@ -81,29 +81,32 @@ export async function listAuditLogs(filters: AuditLogFilters = {}) {
 
   if (filters.entity_type !== undefined) {
     if (!ENTITY_TYPES.includes(filters.entity_type as AuditEntityType)) {
-      throw new AuthError('Entity type must be one of user, project, task', 400);
+      throw new AuthError("Entity type must be one of user, project, task", 400);
     }
     query.entityType = filters.entity_type;
   }
   if (filters.action !== undefined) {
-    if (filters.action.trim() === '') {
-      throw new AuthError('A valid action is required', 400);
+    if (filters.action.trim() === "") {
+      throw new AuthError("A valid action is required", 400);
     }
     query.action = filters.action;
   }
 
   if (filters.from_date !== undefined) {
     if (!DATE_RE.test(filters.from_date)) {
-      throw new AuthError('A valid from_date is required', 400);
+      throw new AuthError("A valid from_date is required", 400);
     }
-    const [y, m, d] = filters.from_date.split('-').map(Number);
-    query.createdAt = { ...(query.createdAt as Record<string, unknown>), $gte: new Date(y, m - 1, d) };
+    const [y, m, d] = filters.from_date.split("-").map(Number);
+    query.createdAt = {
+      ...(query.createdAt as Record<string, unknown>),
+      $gte: new Date(y, m - 1, d),
+    };
   }
   if (filters.to_date !== undefined) {
     if (!DATE_RE.test(filters.to_date)) {
-      throw new AuthError('A valid to_date is required', 400);
+      throw new AuthError("A valid to_date is required", 400);
     }
-    const [y, m, d] = filters.to_date.split('-').map(Number);
+    const [y, m, d] = filters.to_date.split("-").map(Number);
     const end = new Date(y, m - 1, d);
     end.setHours(23, 59, 59, 999);
     query.createdAt = { ...(query.createdAt as Record<string, unknown>), $lte: end };
@@ -120,6 +123,3 @@ export async function listAuditLogs(filters: AuditLogFilters = {}) {
 
   return { logs: docs.map(toPublicAuditLog), total, page, limit };
 }
-
-
-

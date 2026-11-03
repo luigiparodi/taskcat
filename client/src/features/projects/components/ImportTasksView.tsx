@@ -20,6 +20,48 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useDropzone } from "react-dropzone";
+
+function Dropzone({
+  file,
+  fileKind,
+  onFile,
+}: {
+  file: File | null;
+  fileKind: string | null;
+  onFile: (file: File | null) => void;
+}) {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+    },
+    maxFiles: 1,
+    onDrop: (accepted) => onFile(accepted[0] ?? null),
+  });
+
+  return (
+    <div
+      {...getRootProps()}
+      className="flex flex-col items-center justify-center gap-2 rounded-card border border-dashed border-border-strong bg-surface-1 p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+    >
+      <input {...getInputProps()} id="import-file" />
+      <Upload className="size-6 text-muted-foreground" aria-hidden="true" />
+      <div className="flex flex-col gap-1">
+        <p className="text-body font-medium">
+          {isDragActive ? "Drop the file here" : file ? file.name : "Choose a file or drag it here"}
+        </p>
+        <p className="text-caption text-muted-foreground">
+          {file
+            ? fileKind
+              ? `${fileKind.toUpperCase()} file selected`
+              : "Not a supported file type"
+            : "PDF or DOCX, up to 10 MB"}
+        </p>
+      </div>
+    </div>
+  );
+}
 import type { useImportTasks } from "@/features/projects/hooks/useImportTasks";
 
 type ImportTasksViewProps = ReturnType<typeof useImportTasks>;
@@ -36,7 +78,7 @@ export function ImportTasksView({
   setMarkdown,
   file,
   fileKind,
-  handleFileChange,
+  handleFile,
   preview,
   extractError,
   isServiceBusy,
@@ -63,8 +105,8 @@ export function ImportTasksView({
         <DialogHeader>
           <DialogTitle>Import tasks with AI</DialogTitle>
           <DialogDescription>
-            Paste a requirements document or upload a file. Review the extracted
-            tasks before creating them.
+            Paste a requirements document or upload a file. Review the extracted tasks before
+            creating them.
           </DialogDescription>
         </DialogHeader>
 
@@ -86,28 +128,28 @@ export function ImportTasksView({
               setMarkdown={setMarkdown}
               file={file}
               fileKind={fileKind}
-              handleFileChange={handleFileChange}
+              handleFile={handleFile}
             />
           )}
 
-{preview ? null : extractError ? (
-              <div
-                role={isServiceBusy ? "status" : "alert"}
-                className={
-                  isServiceBusy
-                    ? "flex flex-col gap-2 rounded-box border border-warning-border bg-warning-subtle px-3 py-2 text-caption font-medium text-warning-on-subtle"
-                    : "rounded-box border border-danger-border bg-danger-subtle px-3 py-2 text-caption font-medium text-danger"
-                }
-              >
-                <p>{extractError}</p>
-                {isServiceBusy ? (
-                  <p className="text-muted-foreground">
-                    Nothing was lost - your document is still here. Give it a few
-                    seconds and try again.
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
+          {preview ? null : extractError ? (
+            <div
+              role={isServiceBusy ? "status" : "alert"}
+              className={
+                isServiceBusy
+                  ? "flex flex-col gap-2 rounded-box border border-warning-border bg-warning-subtle px-3 py-2 text-caption font-medium text-warning-on-subtle"
+                  : "rounded-box border border-danger-border bg-danger-subtle px-3 py-2 text-caption font-medium text-danger"
+              }
+            >
+              <p>{extractError}</p>
+              {isServiceBusy ? (
+                <p className="text-muted-foreground">
+                  Nothing was lost - your document is still here. Give it a few seconds and try
+                  again.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
 
           {createError ? (
             <p
@@ -131,17 +173,12 @@ export function ImportTasksView({
                 disabled={!canCreate}
                 onClick={handleCreate}
               >
-                Create {preview.length}{" "}
-                {preview.length === 1 ? "task" : "tasks"}
+                Create {preview.length} {preview.length === 1 ? "task" : "tasks"}
               </Button>
             </>
           ) : (
             <>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="button" loading={isExtracting} onClick={handleExtract}>
@@ -162,16 +199,10 @@ function ImportSource({
   setMarkdown,
   file,
   fileKind,
-  handleFileChange,
+  handleFile,
 }: Pick<
   ImportTasksViewProps,
-  | "source"
-  | "handleSourceChange"
-  | "markdown"
-  | "setMarkdown"
-  | "file"
-  | "fileKind"
-  | "handleFileChange"
+  "source" | "handleSourceChange" | "markdown" | "setMarkdown" | "file" | "fileKind" | "handleFile"
 >) {
   return (
     <div className="flex flex-col gap-4">
@@ -210,28 +241,7 @@ function ImportSource({
       ) : (
         <Field>
           <FieldLabel htmlFor="import-file">Document</FieldLabel>
-          <div className="relative flex flex-col items-center justify-center gap-2 rounded-card border border-dashed border-border-strong bg-surface-1 p-6 text-center hover:border-primary/50 transition-colors">
-            <input
-              id="import-file"
-              type="file"
-              accept=".pdf,.docx"
-              onChange={handleFileChange}
-              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-            />
-            <Upload className="size-6 text-muted-foreground" aria-hidden="true" />
-            <div className="flex flex-col gap-1">
-              <p className="text-body font-medium">
-                {file ? file.name : "Choose a file or drag it here"}
-              </p>
-              <p className="text-caption text-muted-foreground">
-                {file
-                  ? fileKind
-                    ? `${fileKind.toUpperCase()} file selected`
-                    : "Not a supported file type"
-                  : "PDF or DOCX, up to 10 MB"}
-              </p>
-            </div>
-          </div>
+          <Dropzone file={file} fileKind={fileKind} onFile={handleFile} />
         </Field>
       )}
     </div>
@@ -247,20 +257,15 @@ function PreviewList({
   removePreviewAt,
 }: Pick<
   ImportTasksViewProps,
-  | "preview"
-  | "members"
-  | "PRIORITIES"
-  | "NO_ASSIGNEE"
-  | "updatePreviewAt"
-  | "removePreviewAt"
+  "preview" | "members" | "PRIORITIES" | "NO_ASSIGNEE" | "updatePreviewAt" | "removePreviewAt"
 >) {
   if (!preview) return null;
 
   return (
     <div className="flex flex-col gap-3">
       <p className="text-caption text-muted-foreground">
-        {preview.length} {preview.length === 1 ? "task" : "tasks"} extracted.
-        Edit or remove any before creating.
+        {preview.length} {preview.length === 1 ? "task" : "tasks"} extracted. Edit or remove any
+        before creating.
       </p>
 
       <ul className="flex flex-col gap-4">
@@ -287,22 +292,16 @@ function PreviewList({
               </div>
 
               <Field>
-                <FieldLabel htmlFor={`${id}-title`}>
-                  Task {index + 1} title
-                </FieldLabel>
+                <FieldLabel htmlFor={`${id}-title`}>Task {index + 1} title</FieldLabel>
                 <Input
                   id={`${id}-title`}
                   value={task.title}
-                  onChange={(event) =>
-                    updatePreviewAt(index, { title: event.target.value })
-                  }
+                  onChange={(event) => updatePreviewAt(index, { title: event.target.value })}
                 />
               </Field>
 
               <Field>
-                <FieldLabel htmlFor={`${id}-description`}>
-                  Task {index + 1} description
-                </FieldLabel>
+                <FieldLabel htmlFor={`${id}-description`}>Task {index + 1} description</FieldLabel>
                 <Textarea
                   id={`${id}-description`}
                   value={task.description ?? ""}
@@ -317,9 +316,7 @@ function PreviewList({
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field>
-                  <FieldLabel htmlFor={`${id}-priority`}>
-                    Task {index + 1} priority
-                  </FieldLabel>
+                  <FieldLabel htmlFor={`${id}-priority`}>Task {index + 1} priority</FieldLabel>
                   <Select
                     value={task.priority}
                     onValueChange={(value) =>
@@ -342,9 +339,7 @@ function PreviewList({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor={`${id}-assignee`}>
-                    Task {index + 1} assignee
-                  </FieldLabel>
+                  <FieldLabel htmlFor={`${id}-assignee`}>Task {index + 1} assignee</FieldLabel>
                   <Select
                     value={task.assignedTo ?? NO_ASSIGNEE}
                     onValueChange={(value) =>
@@ -373,9 +368,7 @@ function PreviewList({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor={`${id}-due`}>
-                    Task {index + 1} due date
-                  </FieldLabel>
+                  <FieldLabel htmlFor={`${id}-due`}>Task {index + 1} due date</FieldLabel>
                   <Input
                     id={`${id}-due`}
                     type="date"
@@ -389,9 +382,7 @@ function PreviewList({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor={`${id}-hours`}>
-                    Task {index + 1} estimated hours
-                  </FieldLabel>
+                  <FieldLabel htmlFor={`${id}-hours`}>Task {index + 1} estimated hours</FieldLabel>
                   <Input
                     id={`${id}-hours`}
                     type="number"
@@ -401,9 +392,7 @@ function PreviewList({
                     onChange={(event) =>
                       updatePreviewAt(index, {
                         estimatedHours:
-                          event.target.value === ""
-                            ? null
-                            : Number(event.target.value),
+                          event.target.value === "" ? null : Number(event.target.value),
                       })
                     }
                   />

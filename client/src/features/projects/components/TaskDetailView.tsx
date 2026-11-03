@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { History, Link2, MessageSquare, Pencil, Trash2 } from "lucide-react";
 import {
   AlertDialog,
@@ -31,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import ReactMarkdown from "react-markdown";
 import type { useTaskDetail } from "@/features/projects/hooks/useTaskDetail";
 
 type TaskDetailViewProps = ReturnType<typeof useTaskDetail>;
@@ -60,13 +63,7 @@ function formatDateTime(value: string) {
   });
 }
 
-function SectionHeading({
-  id,
-  children,
-}: {
-  id: string;
-  children: React.ReactNode;
-}) {
+function SectionHeading({ id, children }: { id: string; children: React.ReactNode }) {
   return (
     <h3
       id={id}
@@ -137,23 +134,25 @@ export function TaskDetailView({
   deleteMutation,
   deleteError,
 }: TaskDetailViewProps) {
+  const commentsParentRef = useRef<HTMLDivElement>(null);
+  const commentsVirtualizer = useVirtualizer({
+    count: commentItems.length,
+    getScrollElement: () => commentsParentRef.current,
+    estimateSize: () => 96,
+    overscan: 4,
+  });
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent size="lg">
         <DialogHeader>
           <DialogTitle>{task.title}</DialogTitle>
-          <DialogDescription>
-            Task details, discussion, links and history.
-          </DialogDescription>
+          <DialogDescription>Task details, discussion, links and history.</DialogDescription>
         </DialogHeader>
 
         <DialogBody className="flex flex-col gap-6">
           {editing ? (
-            <form
-              id="task-edit-form"
-              onSubmit={handleEditSubmit}
-              className="flex flex-col gap-4"
-            >
+            <form id="task-edit-form" onSubmit={handleEditSubmit} className="flex flex-col gap-4">
               {editError ? (
                 <p
                   role="alert"
@@ -174,9 +173,7 @@ export function TaskDetailView({
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="task-edit-description">
-                  Description
-                </FieldLabel>
+                <FieldLabel htmlFor="task-edit-description">Description</FieldLabel>
                 <Textarea
                   id="task-edit-description"
                   rows={4}
@@ -204,9 +201,7 @@ export function TaskDetailView({
 
                 {canManage ? (
                   <Field>
-                    <FieldLabel htmlFor="task-edit-assignee">
-                      Assignee
-                    </FieldLabel>
+                    <FieldLabel htmlFor="task-edit-assignee">Assignee</FieldLabel>
                     <Select value={assignee} onValueChange={setAssignee}>
                       <SelectTrigger id="task-edit-assignee">
                         <SelectValue placeholder="Unassigned" />
@@ -234,9 +229,7 @@ export function TaskDetailView({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="task-edit-hours">
-                    Estimated hours
-                  </FieldLabel>
+                  <FieldLabel htmlFor="task-edit-hours">Estimated hours</FieldLabel>
                   <Input
                     id="task-edit-hours"
                     type="number"
@@ -259,13 +252,11 @@ export function TaskDetailView({
               </div>
 
               {task.description ? (
-                <p className="text-body whitespace-pre-wrap text-foreground">
-                  {task.description}
-                </p>
+                <div className="prose prose-sm max-w-none text-foreground">
+                  <ReactMarkdown>{task.description}</ReactMarkdown>
+                </div>
               ) : (
-                <p className="text-caption text-muted-foreground">
-                  No description.
-                </p>
+                <p className="text-caption text-muted-foreground">No description.</p>
               )}
 
               <dl className="grid grid-cols-2 gap-3 text-caption sm:grid-cols-4">
@@ -289,9 +280,7 @@ export function TaskDetailView({
                 </div>
                 <div>
                   <dt className="text-muted-foreground">Created</dt>
-                  <dd className="font-medium">
-                    {formatDateTime(task.createdAt)}
-                  </dd>
+                  <dd className="font-medium">{formatDateTime(task.createdAt)}</dd>
                 </div>
               </dl>
             </>
@@ -299,28 +288,19 @@ export function TaskDetailView({
 
           {editing ? null : (
             <>
-              <section
-                aria-labelledby="detail-comments"
-                className="flex flex-col gap-3"
-              >
+              <section aria-labelledby="detail-comments" className="flex flex-col gap-3">
                 <SectionHeading id="detail-comments">
                   <MessageSquare aria-hidden="true" className="size-3.5" />
                   Comments
                 </SectionHeading>
 
                 {addCommentError ? (
-                  <p
-                    role="alert"
-                    className="text-caption font-medium text-danger"
-                  >
+                  <p role="alert" className="text-caption font-medium text-danger">
                     {addCommentError}
                   </p>
                 ) : null}
 
-                <form
-                  onSubmit={handleCommentSubmit}
-                  className="flex flex-col gap-2"
-                >
+                <form onSubmit={handleCommentSubmit} className="flex flex-col gap-2">
                   <Field>
                     <FieldLabel className="sr-only">Add a comment</FieldLabel>
                     <Textarea
@@ -342,73 +322,72 @@ export function TaskDetailView({
                 </form>
 
                 {comments.isPending ? (
-                  <p
-                    role="status"
-                    className="text-caption text-muted-foreground"
-                  >
+                  <p role="status" className="text-caption text-muted-foreground">
                     Loading comments...
                   </p>
                 ) : commentsError ? (
-                  <p
-                    role="alert"
-                    className="text-caption font-medium text-danger"
-                  >
+                  <p role="alert" className="text-caption font-medium text-danger">
                     {commentsError}
                   </p>
                 ) : commentItems.length === 0 ? (
-                  <p className="text-caption text-muted-foreground">
-                    No comments yet.
-                  </p>
+                  <p className="text-caption text-muted-foreground">No comments yet.</p>
                 ) : (
-                  <ul className="flex flex-col gap-3">
-                    {commentItems.map((comment) => (
-                      <li
-                        key={comment.id}
-                        className="rounded-box border border-border p-3"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="text-caption font-medium">
-                              {nameOf(comment.userId)}
-                            </p>
-                            <p className="mt-1 text-body whitespace-pre-wrap">
-                              {comment.content}
-                            </p>
-                            <p className="mt-1 text-footnote text-muted-foreground">
-                              {formatDateTime(comment.createdAt)}
-                            </p>
-                          </div>
-                          {canManage || comment.userId === currentUserId ? (
-                            <Button
-                              variant="ghost"
-                              size="icon-sm"
-                              aria-label={`Delete comment by ${nameOf(comment.userId)}`}
-                              onClick={() => removeComment.mutate(comment.id)}
-                            >
-                              <Trash2 aria-hidden="true" />
-                            </Button>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  <div ref={commentsParentRef} className="max-h-64 overflow-auto">
+                    <ul
+                      className="relative flex flex-col gap-3"
+                      style={{ height: commentsVirtualizer.getTotalSize() + "px" }}
+                    >
+                      {commentsVirtualizer.getVirtualItems().map((virtualRow) => {
+                        const comment = commentItems[virtualRow.index];
+                        return (
+                          <li
+                            key={comment.id}
+                            data-index={virtualRow.index}
+                            ref={commentsVirtualizer.measureElement}
+                            className="absolute left-0 top-0 w-full pb-3"
+                            style={{ transform: "translateY(" + virtualRow.start + "px)" }}
+                          >
+                            <div className="rounded-box border border-border p-3">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="text-caption font-medium">
+                                    {nameOf(comment.userId)}
+                                  </p>
+                                  <p className="mt-1 text-body whitespace-pre-wrap">
+                                    {comment.content}
+                                  </p>
+                                  <p className="mt-1 text-footnote text-muted-foreground">
+                                    {formatDateTime(comment.createdAt)}
+                                  </p>
+                                </div>
+                                {canManage || comment.userId === currentUserId ? (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon-sm"
+                                    aria-label={"Delete comment by " + nameOf(comment.userId)}
+                                    onClick={() => removeComment.mutate(comment.id)}
+                                  >
+                                    <Trash2 aria-hidden="true" />
+                                  </Button>
+                                ) : null}
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 )}
               </section>
 
-              <section
-                aria-labelledby="detail-links"
-                className="flex flex-col gap-3"
-              >
+              <section aria-labelledby="detail-links" className="flex flex-col gap-3">
                 <SectionHeading id="detail-links">
                   <Link2 aria-hidden="true" className="size-3.5" />
                   Links
                 </SectionHeading>
 
                 {addLinkError ? (
-                  <p
-                    role="alert"
-                    className="text-caption font-medium text-danger"
-                  >
+                  <p role="alert" className="text-caption font-medium text-danger">
                     {addLinkError}
                   </p>
                 ) : null}
@@ -439,33 +418,22 @@ export function TaskDetailView({
                     size="sm"
                     className="self-end"
                     loading={addLink.isPending}
-                    disabled={
-                      linkUrl.trim().length === 0 ||
-                      linkTitle.trim().length === 0
-                    }
+                    disabled={linkUrl.trim().length === 0 || linkTitle.trim().length === 0}
                   >
                     Add link
                   </Button>
                 </form>
 
                 {links.isPending ? (
-                  <p
-                    role="status"
-                    className="text-caption text-muted-foreground"
-                  >
+                  <p role="status" className="text-caption text-muted-foreground">
                     Loading links...
                   </p>
                 ) : linksError ? (
-                  <p
-                    role="alert"
-                    className="text-caption font-medium text-danger"
-                  >
+                  <p role="alert" className="text-caption font-medium text-danger">
                     {linksError}
                   </p>
                 ) : linkItems.length === 0 ? (
-                  <p className="text-caption text-muted-foreground">
-                    No links yet.
-                  </p>
+                  <p className="text-caption text-muted-foreground">No links yet.</p>
                 ) : (
                   <ul className="flex flex-col gap-2">
                     {linkItems.map((link) => (
@@ -502,40 +470,27 @@ export function TaskDetailView({
                 )}
               </section>
 
-              <section
-                aria-labelledby="detail-history"
-                className="flex flex-col gap-3"
-              >
+              <section aria-labelledby="detail-history" className="flex flex-col gap-3">
                 <SectionHeading id="detail-history">
                   <History aria-hidden="true" className="size-3.5" />
                   History
                 </SectionHeading>
 
                 {history.isPending ? (
-                  <p
-                    role="status"
-                    className="text-caption text-muted-foreground"
-                  >
+                  <p role="status" className="text-caption text-muted-foreground">
                     Loading history...
                   </p>
                 ) : historyError ? (
-                  <p
-                    role="alert"
-                    className="text-caption font-medium text-danger"
-                  >
+                  <p role="alert" className="text-caption font-medium text-danger">
                     {historyError}
                   </p>
                 ) : historyItems.length === 0 ? (
-                  <p className="text-caption text-muted-foreground">
-                    No changes recorded yet.
-                  </p>
+                  <p className="text-caption text-muted-foreground">No changes recorded yet.</p>
                 ) : (
                   <ol className="flex flex-col gap-2">
                     {historyItems.map((entry) => (
                       <li key={entry.id} className="text-caption">
-                        <span className="font-medium">
-                          {nameOf(entry.userId)}
-                        </span>{" "}
+                        <span className="font-medium">{nameOf(entry.userId)}</span>{" "}
                         <span className="text-muted-foreground">
                           {historyActionLabel(entry.action)}
                         </span>
@@ -560,18 +515,10 @@ export function TaskDetailView({
         <DialogFooter>
           {editing ? (
             <>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setEditing(false)}
-              >
+              <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                form="task-edit-form"
-                loading={updateMutation.isPending}
-              >
+              <Button type="submit" form="task-edit-form" loading={updateMutation.isPending}>
                 Save changes
               </Button>
             </>
@@ -594,11 +541,7 @@ export function TaskDetailView({
                   Delete
                 </Button>
               ) : null}
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
                 Done
               </Button>
             </>
@@ -606,16 +549,13 @@ export function TaskDetailView({
         </DialogFooter>
       </DialogContent>
 
-      <AlertDialog
-        open={confirmingDelete}
-        onOpenChange={handleConfirmingDeleteChange}
-      >
+      <AlertDialog open={confirmingDelete} onOpenChange={handleConfirmingDeleteChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this task?</AlertDialogTitle>
             <AlertDialogDescription>
-              &ldquo;{task.title}&rdquo; and its comments, links and history
-              will be permanently removed. This cannot be undone.
+              &ldquo;{task.title}&rdquo; and its comments, links and history will be permanently
+              removed. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
 

@@ -62,7 +62,7 @@ export function useTaskDetail({
 
   const nameOf = React.useCallback(
     (userId: string) => memberNames.get(userId) ?? "Unknown member",
-    [memberNames]
+    [memberNames],
   );
 
   function startEditing() {
@@ -74,7 +74,7 @@ export function useTaskDetail({
     setEstimatedHours(
       task.estimatedHours === null || task.estimatedHours === undefined
         ? ""
-        : String(task.estimatedHours)
+        : String(task.estimatedHours),
     );
     setTitleError(undefined);
     setEditing(true);
@@ -216,9 +216,7 @@ export function useTaskDetail({
 
   const linksError = links.isError ? errorText(links.error, "Unable to load links") : null;
 
-  const historyError = history.isError
-    ? errorText(history.error, "Unable to load history")
-    : null;
+  const historyError = history.isError ? errorText(history.error, "Unable to load history") : null;
 
   const deleteError = deleteMutation.error
     ? deleteMutation.error instanceof ApiError

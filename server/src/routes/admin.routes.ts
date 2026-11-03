@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import { requireAuth, requireRole } from '../middleware/auth';
+import { Router } from "express";
+import { requireAuth, requireRole } from "../middleware/auth";
 import {
   getAdminAnalyticsHandler,
   getAdminStatisticsHandler,
   listAuditLogsHandler,
-} from '../controllers/AdminController';
+} from "../controllers/AdminController";
 
 const router = Router();
 
@@ -67,7 +67,7 @@ const router = Router();
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/audit-logs', requireAuth, requireRole('admin'), listAuditLogsHandler);
+router.get("/audit-logs", requireAuth, requireRole("admin"), listAuditLogsHandler);
 
 /**
  * @openapi
@@ -123,7 +123,7 @@ router.get('/audit-logs', requireAuth, requireRole('admin'), listAuditLogsHandle
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/statistics', requireAuth, requireRole('admin'), getAdminStatisticsHandler);
+router.get("/statistics", requireAuth, requireRole("admin"), getAdminStatisticsHandler);
 
 /**
  * @openapi
@@ -212,9 +212,6 @@ router.get('/statistics', requireAuth, requireRole('admin'), getAdminStatisticsH
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get('/analytics', requireAuth, requireRole('admin'), getAdminAnalyticsHandler);
+router.get("/analytics", requireAuth, requireRole("admin"), getAdminAnalyticsHandler);
 
 export default router;
-
-
-

@@ -1,18 +1,18 @@
-import dotenv from 'dotenv';
-import swaggerUi from 'swagger-ui-express';
-import { client, connectDatabase } from './config/database';
-import { swaggerSpec } from './config/swagger';
-import { createApp } from './app';
-import { logger } from './config/logger';
+import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
+import { client, connectDatabase } from "./config/database";
+import { swaggerSpec } from "./config/swagger";
+import { createApp } from "./app";
+import { logger } from "./config/logger";
 
 dotenv.config();
 
 // Validate required environment variables in production.
-if (process.env.NODE_ENV === 'production') {
-  const required = ['DATABASE_URL', 'JWT_SECRET'];
+if (process.env.NODE_ENV === "production") {
+  const required = ["DATABASE_URL", "JWT_SECRET"];
   const missing = required.filter((key) => !process.env[key]?.trim());
   if (missing.length > 0) {
-    logger.error(`Missing required environment variables: ${missing.join(', ')}`);
+    logger.error(`Missing required environment variables: ${missing.join(", ")}`);
     process.exit(1);
   }
 }
@@ -20,8 +20,8 @@ if (process.env.NODE_ENV === 'production') {
 const app = createApp();
 const PORT = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
 connectDatabase()
@@ -34,13 +34,12 @@ connectDatabase()
         client.close().finally(() => process.exit(0));
       });
     };
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
+    process.on("SIGINT", () => shutdown("SIGINT"));
   })
   .catch((err) => {
-    logger.error('Failed to connect to database', err);
+    logger.error("Failed to connect to database", err);
     process.exit(1);
   });
 
 export default app;
-

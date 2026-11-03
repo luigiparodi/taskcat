@@ -59,18 +59,18 @@ function validate(values: {
   return errors;
 }
 
-export function useEditProject({
-  project,
-  onOpenChange,
-  onEdited,
-}: EditProjectDialogProps) {
+export function useEditProject({ project, onOpenChange, onEdited }: EditProjectDialogProps) {
   const queryClient = useQueryClient();
 
   const [title, setTitle] = React.useState(project?.title ?? "");
   const [description, setDescription] = React.useState(project?.description ?? "");
   const [clientName, setClientName] = React.useState(project?.clientName ?? "");
-  const [startDate, setStartDate] = React.useState(project?.startDate ? project.startDate.substring(0, 10) : "");
-  const [endDate, setEndDate] = React.useState(project?.endDate ? project.endDate.substring(0, 10) : "");
+  const [startDate, setStartDate] = React.useState(
+    project?.startDate ? project.startDate.substring(0, 10) : "",
+  );
+  const [endDate, setEndDate] = React.useState(
+    project?.endDate ? project.endDate.substring(0, 10) : "",
+  );
   const [errors, setErrors] = React.useState<Errors>({});
   const [formError, setFormError] = React.useState<string | null>(null);
 
@@ -91,9 +91,7 @@ export function useEditProject({
       onEdited?.();
     },
     onError: (error) => {
-      setFormError(
-        error instanceof ApiError ? error.message : "Unable to update the project",
-      );
+      setFormError(error instanceof ApiError ? error.message : "Unable to update the project");
     },
   });
 

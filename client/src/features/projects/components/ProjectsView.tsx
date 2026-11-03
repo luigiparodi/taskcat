@@ -80,11 +80,7 @@ export function ProjectsView({
             />
           </Field>
 
-          <div
-            role="group"
-            aria-label="Filter by status"
-            className="flex gap-2"
-          >
+          <div role="group" aria-label="Filter by status" className="flex gap-2">
             {FILTERS.map((filter) => (
               <Button
                 key={filter.value}
@@ -122,10 +118,7 @@ export function ProjectsView({
           </div>
         ) : projects.length === 0 ? (
           <div className="flex flex-col items-center gap-2 rounded-card border border-dashed border-border-strong px-6 py-16 text-center">
-            <FolderKanban
-              aria-hidden="true"
-              className="size-6 text-muted-foreground"
-            />
+            <FolderKanban aria-hidden="true" className="size-6 text-muted-foreground" />
             <p className="text-body font-medium">No projects found</p>
             <p className="text-caption text-muted-foreground">
               {hasFilters
@@ -161,10 +154,7 @@ export function ProjectsView({
                   ) : null}
 
                   <CardBadgeRow>
-                    <Badge
-                      tone={project.status === "active" ? "success" : "neutral"}
-                      dot
-                    >
+                    <Badge tone={project.status === "active" ? "success" : "neutral"} dot>
                       {project.status === "active" ? "Active" : "Inactive"}
                     </Badge>
                   </CardBadgeRow>
@@ -179,20 +169,12 @@ export function ProjectsView({
         )}
 
         {totalPages > 1 ? (
-          <nav
-            aria-label="Pagination"
-            className="mt-8 flex items-center justify-between gap-4"
-          >
+          <nav aria-label="Pagination" className="mt-8 flex items-center justify-between gap-4">
             <p className="text-caption text-muted-foreground">
               Page {page} of {totalPages} - {total} projects
             </p>
             <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={page <= 1}
-                onClick={handlePreviousPage}
-              >
+              <Button size="sm" variant="outline" disabled={page <= 1} onClick={handlePreviousPage}>
                 Previous
               </Button>
               <Button

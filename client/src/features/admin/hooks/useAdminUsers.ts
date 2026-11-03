@@ -30,7 +30,7 @@ export function useAdminUsers() {
       search: debouncedSearch.trim() || undefined,
       role: role === "all" ? undefined : role,
     }),
-    [page, debouncedSearch, role]
+    [page, debouncedSearch, role],
   );
 
   const usersQuery = useQuery({

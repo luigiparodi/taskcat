@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import { getDb } from '../config/database';
+import { randomUUID } from "crypto";
+import { getDb } from "../config/database";
 
 export interface ImportPreviewTask {
   title: string;
@@ -20,14 +20,14 @@ export interface ImportSession {
 
 export const IMPORT_SESSION_TTL_MS = 30 * 60 * 1000;
 
-const COLLECTION = 'import_sessions';
+const COLLECTION = "import_sessions";
 
 function collection() {
   return getDb().collection<ImportSession & { _id: string }>(COLLECTION);
 }
 
 export async function createImportSession(
-  data: Omit<ImportSession, 'expiresAt'>
+  data: Omit<ImportSession, "expiresAt">,
 ): Promise<{ sessionId: string; session: ImportSession }> {
   const sessionId = randomUUID();
   const session: ImportSession = { ...data, expiresAt: Date.now() + IMPORT_SESSION_TTL_MS };

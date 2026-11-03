@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AppHeader, BackToProjectsButton } from "@/components/AppHeader";
 import type { Task, TaskStatus } from "@/lib/api/types";
@@ -47,6 +48,8 @@ export function BoardView({
   moveMutation,
   user,
 }: BoardViewProps) {
+  const [view, setView] = useState<"board" | "list">("board");
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -55,7 +58,7 @@ export function BoardView({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   function handleDragEnd(event: DragEndEvent) {
@@ -99,10 +102,7 @@ export function BoardView({
           <span className="tabular-nums">{tasks.length}</span>
         </h2>
 
-        <SortableContext
-          items={tasks.map((t) => t.id)}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.length === 0 ? (
             <div
               id={status}
@@ -178,7 +178,10 @@ export function BoardView({
         ) : null}
 
         {moveError ? (
-          <p role="alert" className="mb-4 rounded-box border border-danger-border bg-danger-subtle px-3 py-2 text-caption font-medium text-danger">
+          <p
+            role="alert"
+            className="mb-4 rounded-box border border-danger-border bg-danger-subtle px-3 py-2 text-caption font-medium text-danger"
+          >
             {moveError}
           </p>
         ) : null}
@@ -201,25 +204,69 @@ export function BoardView({
             </Button>
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <div className="grid gap-4 lg:grid-cols-3">
-              {COLUMNS.map((column) => {
-                const tasks = columns[column.status];
-                return (
-                  <Column
-                    key={column.status}
-                    status={column.status}
-                    title={column.title}
-                    tasks={tasks}
-                  />
-                );
-              })}
+          <>
+            <div className="mb-4 flex items-center gap-2" role="group" aria-label="Board view">
+              <Button
+                size="sm"
+                variant={view === "board" ? "secondary" : "ghost"}
+                aria-pressed={view === "board"}
+                onClick={() => setView("board")}
+              >
+                Board
+              </Button>
+              <Button
+                size="sm"
+                variant={view === "list" ? "secondary" : "ghost"}
+                aria-pressed={view === "list"}
+                onClick={() => setView("list")}
+              >
+                List
+              </Button>
             </div>
-          </DndContext>
+
+            {view === "board" ? (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <div className="grid gap-4 lg:grid-cols-3">
+                  {COLUMNS.map((column) => {
+                    const tasks = columns[column.status];
+                    return (
+                      <Column
+                        key={column.status}
+                        status={column.status}
+                        title={column.title}
+                        tasks={tasks}
+                      />
+                    );
+                  })}
+                </div>
+              </DndContext>
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {COLUMNS.flatMap((column) =>
+                  columns[column.status].map((task) => (
+                    <li key={task.id}>
+                      <TaskCard
+                        task={task}
+                        canManage={canManageTasks}
+                        pendingTaskId={pendingTaskId}
+                        memberNames={memberNames}
+                        nowMs={nowMs}
+                        onOpenTask={() => setOpenTaskId(task.id)}
+                        onMove={(status: TaskStatus) =>
+                          moveMutation.mutate({ taskId: task.id, status })
+                        }
+                        currentUserId={user?.id ?? ""}
+                      />
+                    </li>
+                  )),
+                )}
+              </ul>
+            )}
+          </>
         )}
       </main>
 
@@ -236,6 +283,6 @@ export function BoardView({
           }}
         />
       ) : null}
-      </>
+    </>
   );
 }

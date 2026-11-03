@@ -49,7 +49,9 @@ export function AdminUsersPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={() => {
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
                 if (h.pendingDelete) {
                   h.removeUser.mutate(h.pendingDelete.id);
                 }

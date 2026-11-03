@@ -1,10 +1,10 @@
-import 'dotenv/config';
-import * as os from 'os';
-import { MongoClient } from 'mongodb';
-import { logger } from './logger';
+import "dotenv/config";
+import * as os from "os";
+import { MongoClient } from "mongodb";
+import { logger } from "./logger";
 
-const uri = process.env.DATABASE_URL || 'mongodb://localhost:27017';
-const dbName = process.env.DATABASE_NAME || 'app';
+const uri = process.env.DATABASE_URL || "mongodb://localhost:27017";
+const dbName = process.env.DATABASE_NAME || "app";
 
 export const client = new MongoClient(uri, { runtimeAdapters: { os } });
 
@@ -17,23 +17,22 @@ export async function connectDatabase() {
   const db = getDb();
 
   // Create indexes
-  await db.collection('users').createIndex({ email: 1 }, { unique: true });
-  await db.collection('users').createIndex({ status: 1 });
-  await db.collection('projects').createIndex({ createdBy: 1 });
-  await db.collection('projects').createIndex({ status: 1 });
-  await db.collection('project_members').createIndex({ projectId: 1, userId: 1 }, { unique: true });
-  await db.collection('project_members').createIndex({ userId: 1 });
-  await db.collection('tasks').createIndex({ projectId: 1, status: 1 });
-  await db.collection('tasks').createIndex({ assignedTo: 1 });
-  await db.collection('task_comments').createIndex({ taskId: 1, createdAt: 1 });
-  await db.collection('task_links').createIndex({ taskId: 1, createdAt: -1 });
-  await db.collection('task_history').createIndex({ taskId: 1, createdAt: -1 });
-  await db.collection('audit_logs').createIndex({ entityType: 1, createdAt: -1 });
-  await db.collection('refresh_tokens').createIndex({ userId: 1 });
-  await db.collection('refresh_tokens').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-  await db.collection('import_sessions').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db.collection("users").createIndex({ email: 1 }, { unique: true });
+  await db.collection("users").createIndex({ status: 1 });
+  await db.collection("projects").createIndex({ createdBy: 1 });
+  await db.collection("projects").createIndex({ status: 1 });
+  await db.collection("project_members").createIndex({ projectId: 1, userId: 1 }, { unique: true });
+  await db.collection("project_members").createIndex({ userId: 1 });
+  await db.collection("tasks").createIndex({ projectId: 1, status: 1 });
+  await db.collection("tasks").createIndex({ assignedTo: 1 });
+  await db.collection("task_comments").createIndex({ taskId: 1, createdAt: 1 });
+  await db.collection("task_links").createIndex({ taskId: 1, createdAt: -1 });
+  await db.collection("task_history").createIndex({ taskId: 1, createdAt: -1 });
+  await db.collection("audit_logs").createIndex({ entityType: 1, createdAt: -1 });
+  await db.collection("refresh_tokens").createIndex({ userId: 1 });
+  await db.collection("refresh_tokens").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db.collection("import_sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-  logger.info('MongoDB connected & indexes ensured');
+  logger.info("MongoDB connected & indexes ensured");
   return db;
 }
-

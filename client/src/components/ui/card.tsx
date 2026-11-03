@@ -1,11 +1,11 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 type CardProps = React.ComponentProps<"div"> & {
-  interactive?: boolean
-  selected?: boolean
-  dragging?: boolean
-}
+  interactive?: boolean;
+  selected?: boolean;
+  dragging?: boolean;
+};
 
 function Card({
   className,
@@ -27,11 +27,11 @@ function Card({
           "cursor-pointer hover:border-border-strong hover:shadow-card-hover focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 focus-visible:outline-none active:scale-[0.99]",
         selected && "border-ring ring-3 ring-ring/40",
         dragging && "scale-[0.98] opacity-60 shadow-none",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
@@ -41,7 +41,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("flex items-start justify-between gap-3", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
@@ -51,7 +51,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
       className={cn("text-heading leading-snug font-semibold text-balance", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
@@ -61,11 +61,11 @@ function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
       className={cn("text-caption text-muted-foreground line-clamp-2 text-pretty", className)}
       {...props}
     />
-  )
+  );
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-content" className={cn("min-w-0", className)} {...props} />
+  return <div data-slot="card-content" className={cn("min-w-0", className)} {...props} />;
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
@@ -74,11 +74,11 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card-footer"
       className={cn(
         "flex items-center justify-between gap-3 border-t border-border pt-3",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function CardBadgeRow({ className, ...props }: React.ComponentProps<"div">) {
@@ -88,7 +88,7 @@ function CardBadgeRow({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("flex flex-wrap items-center gap-1.5", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -100,4 +100,4 @@ export {
   CardFooter,
   CardBadgeRow,
   type CardProps,
-}
+};

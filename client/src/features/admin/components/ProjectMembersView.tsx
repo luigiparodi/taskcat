@@ -64,8 +64,7 @@ export function ProjectMembersView({
           <DialogHeader>
             <DialogTitle>Members</DialogTitle>
             <DialogDescription>
-              Anyone you add here can open {projectTitle}. Project admins cannot
-              be removed.
+              Anyone you add here can open {projectTitle}. Project admins cannot be removed.
             </DialogDescription>
           </DialogHeader>
 
@@ -92,11 +91,7 @@ export function ProjectMembersView({
                   </SelectContent>
                 </Select>
 
-                <Button
-                  type="button"
-                  disabled={!picked || isAdding}
-                  onClick={handleAdd}
-                >
+                <Button type="button" disabled={!picked || isAdding} onClick={handleAdd}>
                   <UserPlus aria-hidden="true" />
                   {isAdding ? "Adding..." : "Add"}
                 </Button>
@@ -115,10 +110,7 @@ export function ProjectMembersView({
               ) : null}
 
               {usersError ? (
-                <p
-                  role="alert"
-                  className="text-caption font-medium text-danger"
-                >
+                <p role="alert" className="text-caption font-medium text-danger">
                   {usersError}
                 </p>
               ) : null}
@@ -151,11 +143,7 @@ export function ProjectMembersView({
                 <p role="alert" className="text-body font-medium text-danger">
                   {membersError}
                 </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleRetryMembers}
-                >
+                <Button size="sm" variant="outline" onClick={handleRetryMembers}>
                   Try again
                 </Button>
               </div>
@@ -171,19 +159,12 @@ export function ProjectMembersView({
                     className="flex flex-wrap items-center justify-between gap-3 rounded-box border border-border bg-background px-3 py-2"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-body font-medium">
-                        {member.name}
-                      </p>
-                      <p className="truncate text-caption text-muted-foreground">
-                        {member.email}
-                      </p>
+                      <p className="truncate text-body font-medium">{member.name}</p>
+                      <p className="truncate text-caption text-muted-foreground">{member.email}</p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <Badge
-                        tone={member.role === "admin" ? "info" : "neutral"}
-                        dot
-                      >
+                      <Badge tone={member.role === "admin" ? "info" : "neutral"} dot>
                         {member.role === "admin" ? "Project admin" : "Member"}
                       </Badge>
                       <Button
@@ -214,8 +195,8 @@ export function ProjectMembersView({
           <AlertDialogHeader>
             <AlertDialogTitle>Remove {pendingRemovalName}?</AlertDialogTitle>
             <AlertDialogDescription>
-              They lose access to {projectTitle} straight away. Tasks they
-              created stay on the board.
+              They lose access to {projectTitle} straight away. Tasks they created stay on the
+              board.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -1,7 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { getDb } from '../config/database';
+import { ObjectId } from "mongodb";
+import { getDb } from "../config/database";
 
-export type AuditEntityType = 'user' | 'project' | 'task';
+export type AuditEntityType = "user" | "project" | "task";
 
 export interface AuditLog {
   _id?: ObjectId;
@@ -13,10 +13,8 @@ export interface AuditLog {
   createdAt: Date;
 }
 
-const AUDIT_LOGS_COLLECTION = 'audit_logs';
+const AUDIT_LOGS_COLLECTION = "audit_logs";
 
 export function getAuditLogCollection() {
   return getDb().collection<AuditLog>(AUDIT_LOGS_COLLECTION);
 }
-
-

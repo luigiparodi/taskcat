@@ -1,4 +1,4 @@
-import { createCn } from "cn/config"
+import { createCn } from "cn/config";
 
 export const cn = createCn({
   extend: {
@@ -20,4 +20,4 @@ export const cn = createCn({
       ],
     },
   },
-})
+});
