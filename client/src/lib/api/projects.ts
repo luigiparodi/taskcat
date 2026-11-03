@@ -70,4 +70,22 @@ export const projectsApi = {
   removeMember(projectId: string, userId: string) {
     return api.delete<{ success?: boolean }>(`/projects/${projectId}/members/${userId}`);
   },
+  async downloadExport(projectId: string) {
+    const BASE = import.meta.env.VITE_API_BASE || "/api";
+    const raw = window.localStorage.getItem("cat-task.tokens");
+    const token = raw ? (JSON.parse(raw) as { token?: string }).token : null;
+    const res = await fetch(`${BASE}/projects/${projectId}/export`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error("Export failed");
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `taskcat-project-${projectId}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 };

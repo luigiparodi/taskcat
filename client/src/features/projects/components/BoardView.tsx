@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { projectsApi } from "@/lib/api/projects";
 import { AppHeader, BackToProjectsButton } from "@/components/AppHeader";
 import type { Task, TaskStatus } from "@/lib/api/types";
 import { TaskCard } from "@/features/projects/TaskCard";
@@ -16,6 +18,7 @@ import {
   useSensors,
   type DragEndEvent,
   useDroppable,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -49,6 +52,19 @@ export function BoardView({
   user,
 }: BoardViewProps) {
   const [view, setView] = useState<"board" | "list">("board");
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      await projectsApi.downloadExport(projectId);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -61,7 +77,12 @@ export function BoardView({
     }),
   );
 
+  function handleDragStart(event: { active: { id: string | number } }) {
+    setActiveTaskId(String(event.active.id));
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setActiveTaskId(null);
     const { active, over } = event;
 
     if (!over) return;
@@ -106,7 +127,7 @@ export function BoardView({
           {tasks.length === 0 ? (
             <div
               id={status}
-              className="rounded-box border border-dashed border-border-strong px-3 py-6 text-center text-caption text-muted-foreground min-h-[100px]"
+              className="rounded-box border border-dashed border-border-strong px-3 py-6 text-center text-caption text-muted-foreground min-h-25"
               role="list"
               aria-label={`${title} column, empty`}
             >
@@ -149,21 +170,32 @@ export function BoardView({
         subtitle={`${totalTasks} ${totalTasks === 1 ? "task" : "tasks"}`}
         leading={<BackToProjectsButton />}
         actions={
-          canManageTasks ? (
-            <>
-              <ImportTasksDialog
-                projectId={projectId}
-                members={members.data?.members ?? []}
-                onImported={handleImported}
-              />
-              <CreateTaskDialog
-                projectId={projectId}
-                members={members.data?.members ?? []}
-                open={createOpen}
-                onOpenChange={setCreateOpen}
-              />
-            </>
-          ) : null
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              loading={exporting}
+              onClick={() => void handleExport()}
+            >
+              <Download aria-hidden="true" />
+              Export Excel
+            </Button>
+            {canManageTasks ? (
+              <>
+                <ImportTasksDialog
+                  projectId={projectId}
+                  members={members.data?.members ?? []}
+                  onImported={handleImported}
+                />
+                <CreateTaskDialog
+                  projectId={projectId}
+                  members={members.data?.members ?? []}
+                  open={createOpen}
+                  onOpenChange={setCreateOpen}
+                />
+              </>
+            ) : null}
+          </>
         }
       />
 
@@ -228,6 +260,7 @@ export function BoardView({
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               >
                 <div className="grid gap-4 lg:grid-cols-3">
@@ -243,6 +276,28 @@ export function BoardView({
                     );
                   })}
                 </div>
+                <DragOverlay>
+                  {activeTaskId
+                    ? (() => {
+                        const t = COLUMNS.flatMap((c) => columns[c.status]).find(
+                          (x) => x.id === activeTaskId,
+                        );
+                        if (!t) return null;
+                        return (
+                          <TaskCard
+                            task={t}
+                            canManage={canManageTasks}
+                            pendingTaskId={null}
+                            memberNames={memberNames}
+                            nowMs={nowMs}
+                            onOpenTask={() => {}}
+                            onMove={() => {}}
+                            currentUserId={user?.id ?? ""}
+                          />
+                        );
+                      })()
+                    : null}
+                </DragOverlay>
               </DndContext>
             ) : (
               <ul className="flex flex-col gap-3">

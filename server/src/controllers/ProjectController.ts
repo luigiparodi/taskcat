@@ -14,6 +14,7 @@ import {
   updateProject,
 } from "../services/ProjectService";
 import { getProjectStatistics } from "../services/StatisticsService";
+import { exportProjectToExcel } from "../services/ExportService";
 import { logger } from "../config/logger";
 
 export async function createProjectHandler(req: Request, res: Response) {
@@ -234,6 +235,30 @@ export async function removeMemberHandler(req: Request, res: Response) {
       return;
     }
     logger.error("removeMember error", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export async function exportProjectHandler(req: Request, res: Response) {
+  try {
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const buffer = await exportProjectToExcel(id, req.user!);
+    const safeName = (id ?? 'project').replace(/[^a-zA-Z0-9_-]/g, '');
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="taskcat-project-${safeName}.xlsx"`
+    );
+    res.status(200).send(buffer);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(err.statusCode).json({ error: err.message });
+      return;
+    }
+    logger.error("exportProject error", err);
     res.status(500).json({ error: "Internal server error" });
   }
 }

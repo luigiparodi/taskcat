@@ -5,6 +5,7 @@ import {
   createProjectHandler,
   deactivateProjectHandler,
   deleteProjectHandler,
+  exportProjectHandler,
   getProjectHandler,
   getProjectStatisticsHandler,
   listAvailableUsersHandler,
@@ -119,6 +120,7 @@ router.get("/", requireAuth, listProjectsHandler);
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.get("/:id", requireAuth, getProjectHandler);
+router.get("/:id/export", requireAuth, exportProjectHandler);
 
 /**
  * @openapi
