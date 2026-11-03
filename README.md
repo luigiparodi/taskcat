@@ -22,6 +22,8 @@ taskcat-app/
 | Auth      | JWT (15m/7d), GitHub OAuth, bcryptjs                  |
 | AI Import | Google Gemini (`@google/genai`)                       |
 | Frontend  | Vite, React, TypeScript, React Router, TanStack Query |
+| Forms     | React Hook Form + Zod                                 |
+| UX        | Command palette, virtualized lists, Markdown, PWA     |
 | Styling   | Tailwind CSS v4, shadcn/ui, Apple-esque design tokens |
 
 ---
@@ -61,7 +63,7 @@ npm run dev            # http://localhost:5173 (proxies /api to server)
 
 ---
 
-## Testing
+## Testing & Formatting
 
 ```bash
 # Backend (Jest)
@@ -69,9 +71,13 @@ cd server && npm test
 
 # Frontend (Vitest)
 cd client && npm test
+
+# Format either workspace
+cd client && npm run format
+cd server && npm run format
 ```
 
-> Test suites are not included in this repository yet. CI runs the backend build and the frontend lint/build.
+> Backend tests live in `server/src/__tests__` and run in CI alongside the server build and the client lint/build. Prettier configuration is shared at the repository root.
 
 ## Documentation
 
