@@ -5,7 +5,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* 1. Configuración del Tema de Apple */
+/* 1. Configuración del Tema */
 @theme {
   /* Tipografía: Geist Variable (self-hosted). SF Pro no se puede empaquetar en web;
      la pila de sistema queda solo como fallback en @theme inline */
@@ -13,24 +13,10 @@
     -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
 
-  /* Paleta de Colores de Apple (acento) */
-  --color-apple-bg: #f5f5f7; /* Gris muy claro usado en el fondo de las tiendas y macOS */
-  --color-apple-surface: #ffffff;
-  --color-apple-text: #1d1d1f; /* Casi negro, mejora la legibilidad vs negro puro */
-  --color-apple-text-muted: #86868b;
-  --color-apple-blue: #0071e3; /* Azul icónico de los botones CTA de Apple */
-  --color-apple-blue-hover: #0077ed;
-  --color-apple-border: #d2d2d7;
-
   /* Radios de borde (Border Radius) */
   --radius-apple-card: 1.125rem; /* 18px */
   --radius-apple-button: 9999px; /* Estilo cápsula (Pill) */
   --radius-apple-box: 0.75rem; /* 12px para inputs y alertas */
-
-  /* Sombras (Box Shadows) - Suaves y difusas */
-  --shadow-apple-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-apple-md: 0 4px 14px rgba(0, 0, 0, 0.08);
-  --shadow-apple-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* 2. Estilos Base (Aplicados globalmente) */
@@ -42,13 +28,6 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     overflow-x: hidden;
-    /* Resplandor superior suave y neutro */
-    background-image: radial-gradient(
-      56rem 32rem at 50% -6rem,
-      rgb(160 186 222 / 0.08),
-      transparent 65%
-    );
-    background-attachment: fixed;
     /* Ajuste de renderizado de fuentes específico de WebKit/macOS */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -213,88 +192,93 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Modo claro histórico (sin activar). El modo por defecto es oscuro: ver :root abajo. */
-.light {
-  --background: #ffffff;
-  --foreground: #1d1d1f;
-  --card: #ffffff;
-  --card-foreground: #1d1d1f;
-  --popover: #ffffff;
-  --popover-foreground: #1d1d1f;
-  --primary: #125bb0;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f2f4;
-  --secondary-foreground: #1d1d1f;
-  --muted: #f1f2f4;
-  --muted-foreground: #6e6e73;
-  --accent: #f0f6fe;
-  --accent-foreground: #0a488f;
-  --destructive: #bc413a;
-  --border: #e1e3e5;
-  --input: #7b7e81;
-  --ring: #266fc9;
-  --chart-1: #125bb0;
-  --chart-2: #5690dd;
-  --chart-3: #00883d;
-  --chart-4: #986500;
-  --chart-5: #bc413a;
-  --radius: 0.625rem;
-  --sidebar: #f5f5f7;
-  --sidebar-foreground: #1d1d1f;
-  --sidebar-primary: #125bb0;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f6fe;
-  --sidebar-accent-foreground: #0a488f;
-  --sidebar-border: #e1e3e5;
-  --sidebar-ring: #266fc9;
+/* ---------------------------------------------------------------------------
+   Paleta monocroma (ShadCN "neutral"): solo negro, blanco y grises.
+   La jerarquía se expresa con luminosidad, bordes y superficies, no con color.
+   --------------------------------------------------------------------------- */
 
-  /* Rampa primaria (matiz bloqueado en -103.8) */
-  --primary-50: #f0f6fe;
-  --primary-100: #ddebff;
-  --primary-200: #c1dbff;
-  --primary-300: #a4c9fc;
-  --primary-400: #7faff0;
-  --primary-500: #5690dd;
-  --primary-600: #266fc9;
-  --primary-700: #125bb0;
-  --primary-800: #0a488f;
-  --primary-900: #083871;
+/* Modo claro: se activa con la clase .light en <html>. */
+html.light {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #09090b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #09090b;
+  --destructive: #27272a;
+  --border: #e4e4e7;
+  --input: #a1a1aa;
+  --ring: #71717a;
+  --chart-1: #18181b;
+  --chart-2: #3f3f46;
+  --chart-3: #52525b;
+  --chart-4: #71717a;
+  --chart-5: #a1a1aa;
+  --radius: 0.625rem;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #09090b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #09090b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #71717a;
+
+  /* Rampa primaria (gris neutro) */
+  --primary-50: #fafafa;
+  --primary-100: #f4f4f5;
+  --primary-200: #e4e4e7;
+  --primary-300: #d4d4d8;
+  --primary-400: #a1a1aa;
+  --primary-500: #71717a;
+  --primary-600: #52525b;
+  --primary-700: #3f3f46;
+  --primary-800: #27272a;
+  --primary-900: #18181b;
 
   /* Superficies */
-  --surface-subtle: #f5f5f7;
+  --surface-subtle: #fafafa;
   --surface-1: #ffffff;
-  --surface-2: #ffffff;
-  --surface-inset: #f1f2f4;
+  --surface-2: #f4f4f5;
+  --surface-inset: #f4f4f5;
 
   /* Bordes: hairline / decorativo / identificable (3:1) */
-  --border-strong: #a1a3a7;
+  --border-strong: #a1a1aa;
 
   /* Interactivos */
-  --link: #125bb0;
-  --accent-soft: #f0f6fe;
-  --accent-soft-foreground: #0a488f;
+  --link: #09090b;
+  --accent-soft: #f4f4f5;
+  --accent-soft-foreground: #09090b;
 
-  /* Estados */
-  --success: #00883d;
-  --success-subtle: #e3fae6;
-  --success-border: #9fd7aa;
-  --success-on-subtle: #077f3a;
-  --warning: #986500;
-  --warning-subtle: #fff0dc;
-  --warning-border: #edbe7b;
-  --warning-on-subtle: #956302;
-  --danger: #bc413a;
-  --danger-subtle: #ffeeec;
-  --danger-border: #f9b2a9;
-  --danger-on-subtle: #bc413a;
-  --info: #0076bb;
-  --info-subtle: #e8f4ff;
-  --info-border: #98cdfb;
-  --info-on-subtle: #0372b5;
+  /* Estados monocromos: el tono indica jerarquía, no significado cromático. */
+  --success: #09090b;
+  --success-subtle: #09090b;
+  --success-border: #09090b;
+  --success-on-subtle: #fafafa;
+  --warning: #52525b;
+  --warning-subtle: #fafafa;
+  --warning-border: #a1a1aa;
+  --warning-on-subtle: #3f3f46;
+  --danger: #27272a;
+  --danger-subtle: #f4f4f5;
+  --danger-border: #a1a1aa;
+  --danger-on-subtle: #27272a;
+  --info: #3f3f46;
+  --info-subtle: #f4f4f5;
+  --info-border: #d4d4d8;
+  --info-on-subtle: #09090b;
 
-  /* Movimiento: --duration-* y --gutter-* no son namespaces de Tailwind v4,
-     asi que viven aqui para usarse desde CSS propio. En markup usar
-     duration-150 / duration-250 / duration-400 directamente. */
+  /* Movimiento */
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
@@ -302,155 +286,116 @@
   --gutter-tablet: 1.5rem;
   --gutter-desktop: 2rem;
 
-  /* Estados interactivos: hover aclara, pulsacion oscurece (patron Apple) */
-  --primary-hover: #266fc9;
-  --primary-active: #0a488f;
-  --secondary-hover: #e1e3e5;
-  --secondary-active: #cdcfd2;
-  --destructive-foreground: #ffffff;
-  --danger-hover: #c64e46;
-  --danger-active: #aa2d29;
+  /* Interactivos: hover aclara, pulsación oscurece */
+  --primary-hover: #27272a;
+  --primary-active: #3f3f46;
+  --secondary-hover: #e4e4e7;
+  --secondary-active: #d4d4d8;
+  --destructive-foreground: #fafafa;
+  --danger-hover: #3f3f46;
+  --danger-active: #52525b;
   --overlay: rgba(0, 0, 0, 0.45);
   --dialog-shadow: 0 10px 40px rgba(0, 0, 0, 0.16);
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   --card-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-/* Modo por defecto: OSCURO, cohesivo con el login (Dither). */
+/* Modo por defecto: OSCURO monocromo. */
 :root {
   color-scheme: dark;
-  --background: #0a0a0b;
-  --foreground: #f9fafb;
-  --card: #161719;
-  --card-foreground: #f9fafb;
-  --popover: #292a2c;
-  --popover-foreground: #f9fafb;
-  --primary: #7faff0;
-  --primary-foreground: #0a0a0b;
-  --secondary: #292a2c;
-  --secondary-foreground: #f9fafb;
-  --muted: #292a2c;
-  --muted-foreground: #a1a3a7;
-  --accent: #083871;
-  --accent-foreground: #a4c9fc;
-  --destructive: #f08078;
-  --border: #292a2c;
-  --input: #7b7e81;
-  --ring: #5690dd;
-  --chart-1: #7faff0;
-  --chart-2: #5690dd;
-  --chart-3: #5cc98a;
-  --chart-4: #e0a838;
-  --chart-5: #f08078;
-  --sidebar: #161719;
-  --sidebar-foreground: #f9fafb;
-  --sidebar-primary: #7faff0;
-  --sidebar-primary-foreground: #0a0a0b;
-  --sidebar-accent: #083871;
-  --sidebar-accent-foreground: #a4c9fc;
-  --sidebar-border: #292a2c;
-  --sidebar-ring: #5690dd;
 
-  /* Rampa primaria (misma rampa, pasos claros para fondo oscuro) */
-  --primary-50: #083871;
-  --primary-100: #0a488f;
-  --primary-200: #125bb0;
-  --primary-300: #a4c9fc;
-  --primary-400: #7faff0;
-  --primary-500: #5690dd;
-  --primary-600: #266fc9;
-  --primary-700: #125bb0;
-  --primary-800: #0a488f;
-  --primary-900: #083871;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #101012;
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #09090b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #d4d4d8;
+  --border: #27272a;
+  --input: #71717a;
+  --ring: #a1a1aa;
+  --chart-1: #fafafa;
+  --chart-2: #d4d4d8;
+  --chart-3: #a1a1aa;
+  --chart-4: #71717a;
+  --chart-5: #52525b;
+  --radius: 0.625rem;
+  --sidebar: #101012;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #09090b;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #a1a1aa;
 
-  /* Superficies: se aclaran con la elevacion (patron Apple) */
-  --surface-subtle: #161719;
-  --surface-1: #161719;
-  --surface-2: #292a2c;
-  --surface-inset: #0a0a0b;
+  /* Rampa primaria (gris neutro) */
+  --primary-50: #fafafa;
+  --primary-100: #f4f4f5;
+  --primary-200: #e4e4e7;
+  --primary-300: #d4d4d8;
+  --primary-400: #a1a1aa;
+  --primary-500: #71717a;
+  --primary-600: #52525b;
+  --primary-700: #3f3f46;
+  --primary-800: #27272a;
+  --primary-900: #18181b;
 
-  --border-strong: #424446;
+  /* Superficies: se aclaran con la elevacion */
+  --surface-subtle: #101012;
+  --surface-1: #101012;
+  --surface-2: #18181b;
+  --surface-inset: #09090b;
 
-  --link: #a4c9fc;
-  --accent-soft: #083871;
-  --accent-soft-foreground: #a4c9fc;
+  --border-strong: #52525b;
 
-  /* Estados: pasos elevados, validados sobre las 3 superficies oscuras */
-  --success: #5cc98a;
-  --success-subtle: #273a30;
-  --success-border: #3d6f52;
-  --warning: #e0a838;
-  --warning-subtle: #3b3325;
-  --warning-border: #7b6131;
-  --danger: #f08078;
-  --danger-subtle: #2d2323;
-  --danger-border: #915450;
-  --info: #4aa8ee;
-  --info-subtle: #1e2730;
-  --info-border: #386990;
+  --link: #fafafa;
+  --accent-soft: #27272a;
+  --accent-soft-foreground: #fafafa;
 
-  --success-on-subtle: #5cc98a;
-  --warning-on-subtle: #e0a838;
-  --danger-on-subtle: #f08078;
-  --info-on-subtle: #4aa8ee;
+  /* Estados monocromos: finished/active se invierten para destacar. */
+  --success: #fafafa;
+  --success-subtle: #fafafa;
+  --success-border: #fafafa;
+  --success-on-subtle: #09090b;
+  --warning: #d4d4d8;
+  --warning-subtle: #18181b;
+  --warning-border: #52525b;
+  --warning-on-subtle: #d4d4d8;
+  --danger: #e4e4e7;
+  --danger-subtle: #18181b;
+  --danger-border: #71717a;
+  --danger-on-subtle: #fafafa;
+  --info: #e4e4e7;
+  --info-subtle: #27272a;
+  --info-border: #3f3f46;
+  --info-on-subtle: #fafafa;
 
-  --primary-hover: #a4c9fc;
-  --primary-active: #5690dd;
-  --secondary-hover: #424446;
-  --secondary-active: #161719;
-  --destructive-foreground: #0a0a0b;
-  --danger-hover: #fe9087;
-  --danger-active: #de6e67;
+  --primary-hover: #e4e4e7;
+  --primary-active: #d4d4d8;
+  --secondary-hover: #3f3f46;
+  --secondary-active: #18181b;
+  --destructive-foreground: #09090b;
+  --danger-hover: #d4d4d8;
+  --danger-active: #a1a1aa;
   --overlay: rgba(0, 0, 0, 0.65);
   --dialog-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
   --card-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.65);
 
-  /* Movimiento y rejilla (definidos aquí para el modo por defecto) */
+  /* Movimiento y rejilla */
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
   --gutter-mobile: 1rem;
   --gutter-tablet: 1.5rem;
   --gutter-desktop: 2rem;
-}
-
-/* Fondo de autenticación: deriva de luz lenta y serena (estilo Apple). */
-@keyframes apple-bloom {
-  0%,
-  100% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: translateX(-46%) translateY(-2.5%) scale(1.05);
-    opacity: 1;
-  }
-}
-
-@keyframes apple-bloom-b {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: translate(-5%, -3%) scale(1.06);
-    opacity: 1;
-  }
-}
-
-.apple-drift {
-  animation: apple-bloom 46s ease-in-out infinite alternate;
-}
-
-.apple-drift-b {
-  animation: apple-bloom-b 62s ease-in-out infinite alternate;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .apple-drift,
-  .apple-drift-b {
-    animation: none;
-  }
 }

@@ -73,7 +73,7 @@ export function RegisterPage() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-caption uppercase tracking-wider">
-            <span className="bg-background px-3 text-muted-foreground">Or continue with email</span>
+            <span className="bg-card px-3 text-muted-foreground">Or continue with email</span>
           </div>
         </div>
 

@@ -12,7 +12,7 @@ export function GitHubLoginButton({ className }: { className?: string }) {
       href={loginUrl}
       className={cn(
         buttonBase,
-        "bg-gray-900 text-white border-gray-800 hover:bg-gray-800",
+        "border border-border-strong bg-background text-foreground hover:bg-muted",
         className,
       )}
       aria-label="Continue with GitHub"

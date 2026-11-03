@@ -43,7 +43,7 @@ export function TaskCardView({
         <button
           type="button"
           onClick={handleOpen}
-          className="flex-1 cursor-pointer hover:text-blue-500 transition-discrete rounded-box text-left text-body font-medium text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+          className="flex-1 cursor-pointer hover:underline underline-offset-4 transition-discrete rounded-box text-left text-body font-medium text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
         >
           {task.title}
         </button>

@@ -137,7 +137,7 @@ export function ProjectsView({
                     <CardTitle>
                       <Link
                         to={`/projects/${project.id}`}
-                        className="rounded-box focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40 hover:text-blue-500"
+                        className="rounded-box focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40 hover:underline underline-offset-4"
                       >
                         {project.title}
                       </Link>

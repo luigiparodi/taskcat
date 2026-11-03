@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown, LogOut } from "lucide-react";
+import { ArrowLeft, ChevronDown, LogOut, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -66,6 +67,7 @@ export function AppHeader({
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const isAdmin = user?.role === "admin";
+  const { theme, setTheme } = useTheme();
 
   async function handleSignOut() {
     await logout();
@@ -92,6 +94,19 @@ export function AppHeader({
           {actions}
 
           {isAdmin ? <AdminAreaSwitcher /> : null}
+
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle theme"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            {theme === "light" ? (
+              <Moon aria-hidden="true" className="size-4" />
+            ) : (
+              <Sun aria-hidden="true" className="size-4" />
+            )}
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger aria-label="Account menu">

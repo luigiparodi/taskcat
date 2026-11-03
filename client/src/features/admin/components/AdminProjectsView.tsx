@@ -126,7 +126,7 @@ export function AdminProjectsView({
                       <CardTitle>
                         <Link
                           to={`/projects/${project.id}`}
-                          className="cursor-pointer rounded-box hover:text-blue-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+                          className="cursor-pointer rounded-box hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
                         >
                           {project.title}
                         </Link>
