@@ -109,6 +109,7 @@ export function RegisterPage() {
             <Input
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
+              placeholder="Create a password"
               startIcon={<KeyRound />}
               endSlot={
                 <button
@@ -136,6 +137,7 @@ export function RegisterPage() {
             <Input
               type={showConfirm ? "text" : "password"}
               autoComplete="new-password"
+              placeholder="Re-enter your password"
               startIcon={<KeyRound />}
               endSlot={
                 <button

@@ -60,8 +60,9 @@ export function ProjectsView({
     <>
       <AppHeader
         title="Projects"
+        subtitle="Look into your projects"
         actions={
-          <Button variant="outline" size="sm" onClick={handleRefresh}>
+          <Button variant="outline" onClick={handleRefresh}>
             Refresh
           </Button>
         }

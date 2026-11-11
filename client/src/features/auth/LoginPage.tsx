@@ -103,6 +103,7 @@ export function LoginPage() {
             <Input
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
+              placeholder="Enter your password"
               startIcon={<KeyRound />}
               endSlot={
                 <button

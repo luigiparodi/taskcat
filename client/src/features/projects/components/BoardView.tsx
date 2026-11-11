@@ -173,7 +173,6 @@ export function BoardView({
           <>
             <Button
               variant="outline"
-              size="sm"
               loading={exporting}
               onClick={() => void handleExport()}
             >

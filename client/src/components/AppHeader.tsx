@@ -27,7 +27,7 @@ function AdminAreaSwitcher() {
     <div
       role="group"
       aria-label="Area"
-      className="flex items-center gap-0.5 rounded-full border border-border-strong bg-surface-2 p-0.5"
+      className="flex h-9 items-center gap-0.5 rounded-full border border-border-strong bg-surface-2 p-0.5"
     >
       {segments.map((segment) => {
         const active = segment.to.startsWith("/admin") ? isOnAdmin : !isOnAdmin;
@@ -37,7 +37,7 @@ function AdminAreaSwitcher() {
             to={segment.to}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-full px-3 py-1 text-footnote font-medium transition-colors duration-150 ease-standard focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40",
+              "flex h-full items-center rounded-full px-3 text-body font-medium transition-colors duration-150 ease-standard focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40",
               active
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground",
@@ -109,7 +109,7 @@ export function AppHeader({
           </Button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger aria-label="Account menu">
+            <DropdownMenuTrigger aria-label="Account menu" className="h-9">
               <span className="max-w-40 truncate">{user?.name ?? "Account"}</span>
               <ChevronDown aria-hidden="true" />
             </DropdownMenuTrigger>
